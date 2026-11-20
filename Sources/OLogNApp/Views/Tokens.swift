@@ -348,7 +348,7 @@ enum ThumbnailLoader {
 
 enum StatusGlyph {
     /// Template caliper on a fixed canvas. Progress never changes the image size.
-    /// Jaw geometry matches `renderGlyph` in `scripts/make-icon.swift`: tips at
+    /// Jaw geometry: tips at
     /// 0.24 / 0.76 and waists at 0.38 / 0.62, then scaled by 0.62 about the
     /// centre so a radius-8 ring stays at least 2 pt clear of the jaws.
     static func image(side: CGFloat = 18, progress: Double? = nil) -> NSImage {

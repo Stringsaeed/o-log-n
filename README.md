@@ -39,6 +39,8 @@ scripts/bundle.sh                      # → build/Logn.app (ad-hoc signed)
 open build/Logn.app
 ```
 
+The app icon is an Icon Composer document, `Support/AppIcon.icon`: a pen-and-ink drawing written out by `scripts/make-icon.py`, with its own dark, tinted and clear appearances. `scripts/bundle.sh` compiles it into the app with `actool`. After changing it, run `scripts/make-icon-previews.sh` to refresh the fallback `.icns` and the image above.
+
 The CLI runs the same engine:
 ```sh
 .build/release/ologn-cli compress ~/Desktop/shot.png --mode lossless
