@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Logn — compress any file on your Mac</title>
+<meta name="description" content="Logn is a menu-bar app for macOS that compresses any file. Drag a file, drop it on Smart or Lossless, done. Originals are never overwritten, and everything runs on device.">
+<link rel="canonical" href="https://ologn.app/">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self'; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#1d4ed8">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Logn">
+<meta property="og:url" content="https://ologn.app/">
+<meta property="og:title" content="Logn — compress any file on your Mac">
+<meta property="og:description" content="Drag any file. Drop it on Smart or Lossless. Smaller, with the original untouched. A menu-bar app for macOS, all on device.">
+<meta property="og:image" content="https://ologn.app/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The word Logn, drawn wide and then squeezed narrow, on a cobalt background.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Logn — compress any file on your Mac">
+<meta name="twitter:description" content="Drag any file. Drop it on Smart or Lossless. Smaller, with the original untouched.">
+<meta name="twitter:image" content="https://ologn.app/og.png">
+<meta name="twitter:image:alt" content="The word Logn, drawn wide and then squeezed narrow, on a cobalt background.">
+
+<link rel="icon" href="/favicon.ico" sizes="32x32">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="preload" href="/fonts/archivo-var.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css">
+<script src="/config.js" defer></script>
+<script src="/app.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Logn","url":"https://ologn.app/","applicationCategory":"UtilitiesApplication","operatingSystem":"macOS 26 or later, Apple Silicon","description":"A menu-bar app for macOS that compresses any file. Originals are never overwritten, and everything runs on device."}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<svg class="defs" aria-hidden="true" focusable="false">
+  <defs>
+    <linearGradient id="g-ico" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f8ef7"/><stop offset="1" stop-color="#1e3a8a"/></linearGradient>
+    <symbol id="i-logo" viewBox="0 0 100 100"><rect width="100" height="100" rx="24" fill="url(#g-ico)"/><path d="M30 27Q54 50 30 73M70 27Q46 50 70 73" fill="none" stroke="#e6ebf5" stroke-width="8.5" stroke-linecap="round"/><path d="M50 41l7 9-7 9-7-9z" fill="#22c58b"/></symbol>
+    <symbol id="i-glyph" viewBox="0 0 20 20"><path d="M4.5 3.5Q10 10 4.5 16.5M15.5 3.5Q10 10 15.5 16.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><path d="M10 7.9l1.7 2.1-1.7 2.1L8.3 10z" fill="currentColor"/></symbol>
+    <symbol id="i-smart" viewBox="0 0 20 20"><path d="M8 3.5l1.3 3.9a2 2 0 0 0 1.3 1.3L14.5 10l-3.9 1.3a2 2 0 0 0-1.3 1.3L8 16.5l-1.3-3.9a2 2 0 0 0-1.3-1.3L1.5 10l3.9-1.3a2 2 0 0 0 1.3-1.3z" fill="currentColor"/><path d="M15.5 2l.6 1.6 1.6.6-1.6.6-.6 1.6-.6-1.6-1.6-.6 1.6-.6zM16 13.6l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5z" fill="currentColor"/></symbol>
+    <symbol id="i-lossless" viewBox="0 0 20 20"><path d="M10 2.2l6 2.2v4.9c0 3.6-2.300 6.600-6 8.200-3.700-1.600-6-4.600-6-8.200V4.400z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M7.200 9.900l2 2 3.600-3.900" fill="none" stroke="currentColor" stroke-width="1.700" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 20 20"><circle cx="10" cy="10" r="9" fill="currentColor"/><path d="M6 10.300l2.700 2.700L14 7.400" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-equal" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.200" fill="none" stroke="currentColor" stroke-width="1.600"/><path d="M6.500 8h7M6.500 12h7" stroke="currentColor" stroke-width="1.700" stroke-linecap="round"/></symbol>
+  </defs>
+</svg>
+
+<header class="hero">
+  <nav class="nav wrap" aria-label="Primary">
+    <a class="brand" href="/" aria-label="Logn, home"><svg class="brand-ico" aria-hidden="true"><use href="#i-logo"/></svg><span>Logn</span></a>
+    <ul class="nav-links">
+      <li><a href="#demo">Demo</a></li>
+      <li><a href="#results">Results</a></li>
+      <li><a href="#safety">Safety</a></li>
+      <li><a href="#how">How it works</a></li>
+      <li><a class="nav-cta" href="#install">Install</a></li>
+    </ul>
+  </nav>
+
+  <div class="wrap hero-body">
+    <p class="kicker"><span class="mono">O(log n)</span> for your files · macOS menu-bar app</p>
+    <h1 class="squeeze" id="squeeze">
+      <span class="sr">Logn. Compress any file on your Mac.</span>
+      <span class="sq-row" aria-hidden="true"><span class="sq-wide"></span><span class="sq-core"></span><span class="sq-tight">Logn</span></span>
+    </h1>
+    <div class="hero-foot">
+      <div>
+        <p class="lede">Compress any file. Drag it, drop it, it&rsquo;s smaller. No window, and the original is never overwritten.</p>
+        <div class="cta-row">
+          <a class="btn btn-solid" data-download><span data-download-label>Coming soon</span></a>
+          <a class="btn btn-ghost" href="#demo">Try it in your browser</a>
+        </div>
+        <p class="fine">macOS 26 or later · Apple Silicon · runs entirely on device</p>
+      </div>
+      <picture class="hero-shot">
+        <source srcset="/assets/drop-smart-dark.avif" type="image/avif">
+        <img src="/assets/drop-smart-dark.webp" width="336" height="128" alt="The Logn capsule at the top of the screen: Smart on the left, highlighted, and Lossless on the right." fetchpriority="high" decoding="async">
+      </picture>
+    </div>
+  </div>
+
+  <div class="tape" role="group" aria-label="Measured results, Smart mode">
+    <ul class="tape-run">
+      <li>PNG screenshot <b>−77%</b></li><li>PDF with images <b>−93%</b></li><li>1080p MP4 <b>−56%</b></li><li>WAV <b>−87%</b></li><li>JSON log <b>−95%</b></li><li>Source folder <b>−87%</b></li><li>JPEG photo <b>−24%</b></li><li>HEIC <b>−23%</b></li>
+    </ul>
+    <ul class="tape-run" aria-hidden="true">
+      <li>PNG screenshot <b>−77%</b></li><li>PDF with images <b>−93%</b></li><li>1080p MP4 <b>−56%</b></li><li>WAV <b>−87%</b></li><li>JSON log <b>−95%</b></li><li>Source folder <b>−87%</b></li><li>JPEG photo <b>−24%</b></li><li>HEIC <b>−23%</b></li>
+    </ul>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ───────────── DEMO ───────────── -->
+<section class="sec" id="demo" aria-labelledby="demo-h">
+  <div class="wrap">
+    <p class="eyebrow">Try it here</p>
+    <h2 id="demo-h" class="h2">Drop a file. <span class="tight">Pick a half.</span></h2>
+    <p class="sub">This is the whole app: a capsule with two halves. Drag a sample onto <b>Smart</b> or <b>Lossless</b>, or tap a sample and then a half. You can drag in a file of your own too.</p>
+
+    <div class="stage" id="stage">
+      <div class="stage-bar" aria-hidden="true">
+        <span class="dotrow"><i></i><i></i><i></i></span>
+        <span class="stage-title">Your desktop, roughly</span>
+        <svg class="glyph"><use href="#i-glyph"/></svg>
+      </div>
+      <p class="sim-badge"><span class="sim-dot" aria-hidden="true"></span>Simulation. Nothing is uploaded, read or compressed.</p>
+
+      <div class="cap-slot">
+        <div class="capsule" id="capsule" data-state="idle" role="group" aria-label="Logn drop target (simulated)">
+          <div class="halves">
+            <button type="button" class="half" data-side="l" data-mode="smart">
+              <span class="half-t"><svg aria-hidden="true"><use href="#i-smart"/></svg><b>Smart</b></span>
+              <small>Smallest</small>
+            </button>
+            <span class="seam" aria-hidden="true"></span>
+            <button type="button" class="half" data-side="r" data-mode="lossless">
+              <span class="half-t"><svg aria-hidden="true"><use href="#i-lossless"/></svg><b>Lossless</b></span>
+              <small>Exact quality</small>
+            </button>
+          </div>
+          <div class="pill pill-busy" aria-hidden="true">
+            <svg class="ring" viewBox="0 0 28 28"><circle cx="14" cy="14" r="11"/><circle class="ring-v" cx="14" cy="14" r="11" pathLength="100"/></svg>
+            <span class="pill-txt"><b id="busy-name">file</b><small id="busy-sub">Smart</small></span>
+          </div>
+          <button type="button" class="pill pill-done" id="done-pill" tabindex="-1" aria-hidden="true">
+            <svg class="done-ico" aria-hidden="true"><use id="done-use" href="#i-check"/></svg>
+            <span class="pill-txt"><b id="done-big">−0%</b><small id="done-sub">Saved</small></span>
+          </button>
+        </div>
+      </div>
+
+      <div class="stage-grid">
+        <div class="desk">
+          <p class="desk-h" id="chips-h">Samples from our test set</p>
+          <ul class="chips" aria-labelledby="chips-h">
+            <li><button type="button" class="chip" draggable="true" data-kind="png" aria-pressed="true"><i class="doc" data-ext="PNG"></i><span><b>Screenshot</b><small>1.47 MB</small></span></button></li>
+            <li><button type="button" class="chip" draggable="true" data-kind="jpeg" aria-pressed="false"><i class="doc" data-ext="JPG"></i><span><b>Photo</b><small>1.45 MB</small></span></button></li>
+            <li><button type="button" class="chip" draggable="true" data-kind="heic" aria-pressed="false"><i class="doc" data-ext="HEIC"></i><span><b>Photo</b><small>1.43 MB</small></span></button></li>
+            <li><button type="button" class="chip" draggable="true" data-kind="pdf" aria-pressed="false"><i class="doc" data-ext="PDF"></i><span><b>Report with images</b><small>8.65 MB</small></span></button></li>
+            <li><button type="button" class="chip" draggable="true" data-kind="video" aria-pressed="false"><i class="doc" data-ext="MP4"></i><span><b>1080p clip</b><small>33.0 MB</small></span></button></li>
+            <li><button type="button" class="chip" draggable="true" data-kind="wav" aria-pressed="false"><i class="doc" data-ext="WAV"></i><span><b>Stereo take</b><small>5.76 MB</small></span></button></li>
+            <li><button type="button" class="chip" draggable="true" data-kind="json" aria-pressed="false"><i class="doc" data-ext="JSON"></i><span><b>Server log</b><small>12.5 MB</small></span></button></li>
+            <li><button type="button" class="chip" draggable="true" data-kind="folder" aria-pressed="false"><i class="doc doc-folder" data-ext=""></i><span><b>Source folder</b><small>8.00 MB</small></span></button></li>
+            <li><button type="button" class="chip" draggable="true" data-kind="zip" aria-pressed="false"><i class="doc" data-ext="ZIP"></i><span><b>Archive</b><small>881 KB</small></span></button></li>
+          </ul>
+          <div class="desk-tools">
+            <button type="button" class="tool" id="flip" aria-pressed="false"><kbd>⌥</kbd> Flip the halves</button>
+            <label class="tool tool-file"><input type="file" id="own" class="sr"><span>Use a file of your own</span></label>
+          </div>
+          <p class="desk-note">Your own file stays in this tab. Only its name and size are looked at, to show an estimate.</p>
+        </div>
+
+        <div class="result" id="result" data-state="empty">
+          <p class="sr" id="live" role="status" aria-live="polite"></p>
+          <div class="result-empty">
+            <p class="result-hint"><b>Screenshot</b> is picked. Now choose <b>Smart</b> or <b>Lossless</b> on the capsule above.</p>
+          </div>
+          <div class="result-card" aria-hidden="true">
+            <div class="rc-top">
+              <span class="rc-file" id="rc-file">Screenshot.png</span>
+              <span class="rc-mode" id="rc-mode">Smart</span>
+            </div>
+            <p class="rc-big" id="rc-big">−77%</p>
+            <div class="rc-bars" aria-hidden="true">
+              <div class="rc-bar rc-before"><i></i></div>
+              <div class="rc-bar rc-after"><i id="rc-after-bar"></i></div>
+            </div>
+            <p class="rc-sizes mono" id="rc-sizes">1.47 MB → 338 KB</p>
+            <p class="rc-method" id="rc-method">Oklab palette quantiser</p>
+            <p class="rc-note" id="rc-note"></p>
+            <p class="rc-foot" id="rc-foot">Simulated here. The percentage is measured on our sample set.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="footnote">Sample sizes are the real sizes of files in the 13-file test set. &ldquo;After&rdquo; sizes are worked out from the measured percentage, so they are rounded.</p>
+  </div>
+</section>
+
+<!-- ───────────── RESULTS ───────────── -->
+<section class="sec sec-ink" id="results" aria-labelledby="results-h">
+  <div class="wrap">
+    <p class="eyebrow">Measured, not promised</p>
+    <h2 id="results-h" class="h2">What&rsquo;s left <span class="tight">after Logn.</span></h2>
+    <p class="sub">Every number here was measured on a 13-file sample set. Each bar shows how much of the file remains. A dash means there is no measured figure for that mode.</p>
+
+    <div class="table-scroll">
+    <table class="res">
+      <thead>
+        <tr><th scope="col">File</th><th scope="col"><svg aria-hidden="true"><use href="#i-smart"/></svg>Smart</th><th scope="col"><svg aria-hidden="true"><use href="#i-lossless"/></svg>Lossless</th></tr>
+      </thead>
+      <tbody>
+        <tr><th scope="row">PNG screenshot</th>
+          <td><span class="num">−77%</span><span class="bar" style="--left:.23"><i></i></span></td>
+          <td><span class="num">−35%</span><span class="bar" style="--left:.65"><i></i></span></td></tr>
+        <tr><th scope="row">JPEG photo</th>
+          <td><span class="num">−24%</span><span class="bar" style="--left:.76"><i></i></span></td>
+          <td><span class="num">−1.7%</span><span class="bar" style="--left:.983"><i></i></span><span class="cell-note">−8% with the progressive option</span></td></tr>
+        <tr><th scope="row">HEIC</th>
+          <td><span class="num">−23%</span><span class="bar" style="--left:.77"><i></i></span></td>
+          <td><span class="num dash" aria-label="no measured figure">—</span></td></tr>
+        <tr><th scope="row">PDF with images</th>
+          <td><span class="num">−93%</span><span class="bar" style="--left:.07"><i></i></span></td>
+          <td><span class="num dash" aria-label="no measured figure">—</span></td></tr>
+        <tr><th scope="row">1080p MP4 <small>hardware HEVC</small></th>
+          <td><span class="num">−56%</span><span class="bar" style="--left:.44"><i></i></span></td>
+          <td><span class="num dash" aria-label="no measured figure">—</span></td></tr>
+        <tr><th scope="row">WAV</th>
+          <td><span class="num">−87%</span><span class="bar" style="--left:.13"><i></i></span><span class="cell-note">to AAC</span></td>
+          <td><span class="num">−50%</span><span class="bar" style="--left:.5"><i></i></span><span class="cell-note">to FLAC</span></td></tr>
+        <tr><th scope="row">12 MB JSON log</th>
+          <td><span class="num">−95%</span><span class="bar" style="--left:.05"><i></i></span><span class="cell-note">.xz</span></td>
+          <td><span class="num">−95%</span><span class="bar" style="--left:.05"><i></i></span><span class="cell-note">.xz</span></td></tr>
+        <tr><th scope="row">Source-code folder</th>
+          <td><span class="num">−87%</span><span class="bar" style="--left:.13"><i></i></span><span class="cell-note">.tar.xz</span></td>
+          <td><span class="num">−87%</span><span class="bar" style="--left:.13"><i></i></span><span class="cell-note">.tar.xz</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p class="optimal"><svg aria-hidden="true"><use href="#i-equal"/></svg><span>An already-compressed zip or video is reported as <b>&ldquo;Already optimal&rdquo;</b> in milliseconds. Logn doesn&rsquo;t pretend.</span></p>
+  </div>
+</section>
+
+<!-- ───────────── SURFACES ───────────── -->
+<section class="sec" id="surfaces" aria-labelledby="surf-h">
+  <div class="wrap">
+    <p class="eyebrow">Two surfaces, no window</p>
+    <h2 id="surf-h" class="h2">It shows up <span class="tight">when you drag.</span></h2>
+    <p class="sub">Logn lives in the menu bar. Start dragging any file, anywhere, and a glass capsule slides in at the top-centre of the screen. Hold <kbd>⌥</kbd> to flip the two halves.</p>
+
+    <ol class="states">
+      <li><picture><source srcset="/assets/drop-smart-dark.avif" type="image/avif"><img src="/assets/drop-smart-dark.webp" width="336" height="128" loading="lazy" decoding="async" alt="Capsule with the Smart half highlighted: Drop to shrink."></picture><p><b>Smart</b> The smallest file that still looks or sounds identical.</p></li>
+      <li><picture><source srcset="/assets/drop-lossless-dark.avif" type="image/avif"><img src="/assets/drop-lossless-dark.webp" width="336" height="128" loading="lazy" decoding="async" alt="Capsule with the Lossless half highlighted: Drop exact."></picture><p><b>Lossless</b> Exact content, checked before it&rsquo;s written.</p></li>
+      <li><picture><source srcset="/assets/drop-compressing-dark.avif" type="image/avif"><img src="/assets/drop-compressing-dark.webp" width="336" height="128" loading="lazy" decoding="async" alt="The capsule as a progress pill with a ring, a file name and a speed."></picture><p><b>Working</b> The halves merge into one progress pill.</p></li>
+      <li><picture><source srcset="/assets/drop-done-dark.avif" type="image/avif"><img src="/assets/drop-done-dark.webp" width="336" height="128" loading="lazy" decoding="async" alt="The capsule as a done pill showing a saving and a file name."></picture><p><b>Done</b> The saving, then it gets out of your way.</p></li>
+    </ol>
+
+    <div class="tray-head">
+      <h3 class="h3"><span class="keys" aria-label="Control Option Space"><kbd>⌃</kbd><kbd>⌥</kbd><kbd class="k-space">Space</kbd></span> opens the tray.</h3>
+      <p>A Liquid Glass tray across the bottom quarter of the screen, with the live queue, history and settings. It opens in about <b class="mono">65&nbsp;ms</b>.</p>
+    </div>
+    <figure class="shot">
+      <picture>
+        <source media="(prefers-color-scheme: dark)" type="image/avif" srcset="/assets/tray-dark-900.avif 900w, /assets/tray-dark-1600.avif 1600w, /assets/tray-dark-2716.avif 2716w" sizes="(min-width: 1240px) 1160px, 94vw">
+        <source media="(prefers-color-scheme: dark)" type="image/webp" srcset="/assets/tray-dark-900.webp 900w, /assets/tray-dark-1600.webp 1600w, /assets/tray-dark-2716.webp 2716w" sizes="(min-width: 1240px) 1160px, 94vw">
+        <source type="image/avif" srcset="/assets/tray-light-900.avif 900w, /assets/tray-light-1600.avif 1600w, /assets/tray-light-2716.avif 2716w" sizes="(min-width: 1240px) 1160px, 94vw">
+        <img src="/assets/tray-light-1600.webp" srcset="/assets/tray-light-900.webp 900w, /assets/tray-light-1600.webp 1600w, /assets/tray-light-2716.webp 2716w" sizes="(min-width: 1240px) 1160px, 94vw" width="2716" height="594" loading="lazy" decoding="async" alt="The Logn tray: mode and quality controls along the top, a drop well on the left, and a queue of files on the right, with a toast offering to undo a replaced original.">
+      </picture>
+      <figure class="shot shot-2">
+        <picture>
+          <source media="(prefers-color-scheme: dark)" type="image/avif" srcset="/assets/settings-dark-900.avif 900w, /assets/settings-dark-1600.avif 1600w, /assets/settings-dark-2716.avif 2716w" sizes="(min-width: 1240px) 1160px, 94vw">
+          <source media="(prefers-color-scheme: dark)" type="image/webp" srcset="/assets/settings-dark-900.webp 900w, /assets/settings-dark-1600.webp 1600w, /assets/settings-dark-2716.webp 2716w" sizes="(min-width: 1240px) 1160px, 94vw">
+          <source type="image/avif" srcset="/assets/settings-light-900.avif 900w, /assets/settings-light-1600.avif 1600w, /assets/settings-light-2716.avif 2716w" sizes="(min-width: 1240px) 1160px, 94vw">
+          <img src="/assets/settings-light-1600.webp" srcset="/assets/settings-light-900.webp 900w, /assets/settings-light-1600.webp 1600w, /assets/settings-light-2716.webp 2716w" sizes="(min-width: 1240px) 1160px, 94vw" width="2716" height="594" loading="lazy" decoding="async" alt="Settings, shown inside the tray: presence, compression and output options in three columns.">
+        </picture>
+      </figure>
+      <figcaption>Real screenshots, taken in the app&rsquo;s built-in demo mode. The file names and figures inside them are placeholders, not measurements.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ───────────── SAFETY ───────────── -->
+<section class="sec sec-cobalt" id="safety" aria-labelledby="safety-h">
+  <div class="wrap">
+    <p class="eyebrow">Safety</p>
+    <h2 id="safety-h" class="h2">Squeezed. <span class="tight">Nothing essential lost.</span></h2>
+    <ol class="rules">
+      <li><span class="rule-n mono">01</span><h3>The original is never overwritten.</h3><p>Logn writes a new file. Yours stays exactly where it was, exactly as it was.</p></li>
+      <li><span class="rule-n mono">02</span><h3>The output is never larger.</h3><p>If nothing can be saved, Logn says <b>&ldquo;Already optimal&rdquo;</b> instead of handing you a bigger file.</p></li>
+      <li><span class="rule-n mono">03</span><h3>Lossless is checked.</h3><p>Every lossless result is verified against the original before it&rsquo;s written.</p></li>
+      <li><span class="rule-n mono">04</span><h3>Replace can be undone.</h3><p><b>Replace original</b> moves the original to the Trash, and <kbd>⌘</kbd><kbd>Z</kbd> undoes it.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ───────────── HOW ───────────── -->
+<section class="sec" id="how" aria-labelledby="how-h">
+  <div class="wrap">
+    <p class="eyebrow">How it works</p>
+    <h2 id="how-h" class="h2">Mostly <span class="tight">your Mac itself.</span></h2>
+    <div class="how">
+      <div class="how-col">
+        <h3 class="how-h">Native Apple frameworks</h3>
+        <ul class="tags">
+          <li>ImageIO</li><li>VideoToolbox</li><li>AudioToolbox</li><li>PDFKit / Quartz</li><li>Compression</li>
+        </ul>
+        <h3 class="how-h">Two vendored open-source libraries</h3>
+        <ul class="tags tags-lic">
+          <li>libdeflate <small>MIT</small></li><li>libjpeg-turbo <small>BSD / IJG</small></li>
+        </ul>
+        <h3 class="how-h">Logn&rsquo;s own</h3>
+        <ul class="tags">
+          <li>PNG optimiser</li><li>Oklab colour quantiser</li>
+        </ul>
+      </div>
+      <div class="how-col how-facts">
+        <dl>
+          <div><dt>Where it runs</dt><dd>On your Mac. Everything happens on device.</dd></div>
+          <div><dt>Network</dt><dd>None.</dd></div>
+          <div><dt>Account</dt><dd>None.</dd></div>
+          <div><dt>Requires</dt><dd>macOS 26 or later, on Apple Silicon.</dd></div>
+          <div><dt>The name</dt><dd>The repo is called <span class="mono">o-log-n</span>, as in <span class="mono">O(log n)</span>: big input, small result.</dd></div>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ───────────── INSTALL ───────────── -->
+<section class="sec sec-ink" id="install" aria-labelledby="install-h">
+  <div class="wrap">
+    <p class="eyebrow">Install</p>
+    <h2 id="install-h" class="h2">Get <span class="tight">Logn.</span></h2>
+    <p class="sub" data-soon-copy>Not out yet. The first notarized release is still on its way, so neither route below works today. This page will switch on when it does.</p>
+    <div class="install">
+      <div class="inst-card">
+        <div class="inst-top"><h3>Homebrew</h3><span class="badge" data-brew-badge>Not live yet</span></div>
+        <div class="code"><code id="brew-cmd">brew install --cask stringsaeed/tap/logn</code><button type="button" class="copy" id="brew-copy" disabled>Copy</button></div>
+        <p class="inst-note" data-brew-note>The tap isn&rsquo;t published yet, so this command will fail for now.</p>
+      </div>
+      <div class="inst-card">
+        <div class="inst-top"><h3>Direct download</h3><span class="badge" data-dl-badge>Coming soon</span></div>
+        <a class="btn btn-solid btn-wide" data-download><span data-download-label>Coming soon</span></a>
+        <p class="inst-note">A DMG for macOS 26 or later on Apple Silicon.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <a class="brand" href="/" aria-label="Logn, home"><svg class="brand-ico" aria-hidden="true"><use href="#i-logo"/></svg><span>Logn</span></a>
+    <p>This site has no trackers, no analytics and no cookies, and it loads nothing from other domains.</p>
+    <p class="mono foot-o">O(log n)</p>
+  </div>
+</footer>
+</body>
+</html>
