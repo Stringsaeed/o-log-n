@@ -1,0 +1,95 @@
+---
+import AppIcon from './AppIcon.astro';
+import DownloadButton from './DownloadButton.astro';
+import Icon from './Icon.astro';
+import Stage from './Stage.astro';
+import { downloadLive, REQUIREMENTS } from '../config';
+---
+<section class="hero" aria-labelledby="hero-h">
+  <div class="glow" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="copy">
+      <AppIcon size={88} eager class="icon" />
+      <p class:list={['pill', !downloadLive && 'soon']}>
+        <span class="dot" aria-hidden="true"></span>
+        {downloadLive ? 'Out now for macOS 26' : 'Coming soon for macOS 26'}
+      </p>
+      <h1 id="hero-h">Drag. Drop. <span class="small">Smaller.</span></h1>
+      <p class="lede">Logn is a menu-bar app that compresses any file on your Mac. No window, nothing leaves your device, and the original is never overwritten.</p>
+      <div class="cta">
+        <DownloadButton />
+        <a class="btn btn-ghost" href="#results">See the numbers <Icon name="arrow-down" size={16} /></a>
+      </div>
+      <p class="fine">{REQUIREMENTS} · runs entirely on device</p>
+    </div>
+    <div class="demo" id="demo">
+      <h2 class="sr">Try it here: a simulation of the Logn capsule</h2>
+      <Stage />
+      <p class="note foot">Sample sizes are the real sizes of files in the 13-file test set. “After” sizes are worked out from the measured percentage, so they are rounded.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    padding-top: clamp(40px, 7vw, 76px);
+    padding-bottom: clamp(24px, 4vw, 40px);
+  }
+  .glow {
+    position: absolute;
+    inset: -120px 0 auto;
+    height: 760px;
+    z-index: -1;
+    background:
+      radial-gradient(42% 46% at 50% 22%, color-mix(in srgb, var(--cobalt) 20%, transparent), transparent 70%),
+      radial-gradient(30% 34% at 24% 30%, color-mix(in srgb, var(--mint-fill) 13%, transparent), transparent 70%),
+      radial-gradient(30% 34% at 78% 26%, color-mix(in srgb, #8166ff 14%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+  .copy {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+  .copy :global(.icon) {
+    width: 88px;
+    height: 88px;
+    margin-bottom: 22px;
+    filter: drop-shadow(0 14px 22px rgba(29, 78, 216, 0.32));
+  }
+  h1 {
+    margin-top: 22px;
+    font-size: clamp(2.75rem, 8.4vw, 5.5rem);
+    font-weight: 600;
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+    text-wrap: balance;
+  }
+  /* The last word is set at the font's narrowest width: the name of the app, drawn. */
+  .small {
+    display: inline-block;
+    font-stretch: 75%;
+    letter-spacing: -0.03em;
+    color: var(--mint);
+  }
+  .lede {
+    max-width: 34em;
+    margin-top: 22px;
+    color: var(--ink-2);
+    font-size: clamp(1.0625rem, 1.7vw, 1.25rem);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+  .cta { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 28px; }
+  .fine { margin-top: 16px; color: var(--ink-3); font-size: 0.875rem; }
+  .demo { margin-top: clamp(40px, 6vw, 64px); }
+  .foot { max-width: 62ch; margin: 16px auto 0; text-align: center; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .small { animation: squeeze 0.9s var(--spring) 0.25s both; transform-origin: left center; }
+  }
+  /* Transform only, so the headline never shifts layout. */
+  @keyframes squeeze { from { transform: scaleX(1.28); } to { transform: none; } }
+</style>

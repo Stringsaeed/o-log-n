@@ -1,0 +1,22 @@
+---
+// One button, two states. Which one is decided in src/config.ts.
+import Icon from './Icon.astro';
+import { DOWNLOAD_URL, downloadLive } from '../config';
+
+interface Props {
+  class?: string;
+  compact?: boolean;
+}
+const { class: cls = '', compact = false } = Astro.props;
+---
+{downloadLive ? (
+  <a class={`btn btn-primary ${cls}`} href={DOWNLOAD_URL}>
+    <Icon name="download" />
+    <span>{compact ? 'Download' : 'Download for macOS'}</span>
+  </a>
+) : (
+  <span class={`btn btn-soon ${cls}`}>
+    <Icon name="clock" />
+    <span>Coming soon</span>
+  </span>
+)}

@@ -1,0 +1,19 @@
+---
+import AppIcon from './AppIcon.astro';
+---
+<footer class="foot">
+  <div class="wrap in">
+    <a class="brand" href="/" aria-label="Logn, home"><AppIcon size={24} /><span>Logn</span></a>
+    <p>This site has no trackers, no analytics and no cookies, and it loads nothing from other domains.</p>
+    <p class="mono o">O(log n)</p>
+  </div>
+</footer>
+
+<style>
+  .foot { padding-block: 28px 44px; color: var(--ink-3); font-size: 0.875rem; }
+  .in { display: flex; align-items: center; gap: 12px 24px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 8px; color: var(--ink); font-weight: 650; font-size: 1rem; text-decoration: none; }
+  .brand :global(img) { width: 24px; height: 24px; }
+  p { flex: 1; min-width: min(100%, 32ch); }
+  .o { flex: none; min-width: 0; }
+</style>

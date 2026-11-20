@@ -1,0 +1,156 @@
+---
+// The measured results, straight from src/data/results.ts.
+import Icon from './Icon.astro';
+import { KINDS, RESULT_ORDER, formatPct, type Measured } from '../data/results';
+
+const rows = RESULT_ORDER.map((id) => ({ id, ...KINDS[id] }));
+const left = (m: Measured) => Math.max(1.5, 100 - m.pct);
+---
+<section class="sec" id="results" aria-labelledby="results-h">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <p class="eyebrow">Measured, not promised</p>
+      <h2 id="results-h" class="h2">What’s left <span class="pinch">after Logn.</span></h2>
+      <p class="sub">Every number here was measured on a 13-file sample set. Each bar shows how much of the file remains.</p>
+    </div>
+
+    <ul class="grid">
+      {rows.map((r) => (
+        <li class="card rcard" data-reveal>
+          <div class="top">
+            <h3>{r.title}</h3>
+            {r.ext && <span class="ext mono" aria-hidden="true">{r.ext}</span>}
+          </div>
+
+          <div class="main">
+            <p class="label"><Icon name="smart" size={15} />Smart</p>
+            <p class="big">{formatPct(r.smart!.pct)}</p>
+            <svg class="bar" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
+              <rect class="track" width="100" height="6" /><rect class="fill" width={left(r.smart!)} height="6" />
+            </svg>
+            <p class="how">{r.smart!.how}</p>
+          </div>
+
+          <div class="alt">
+            <p class="label"><Icon name="lossless" size={15} />Lossless</p>
+            {r.lossless ? (
+              <Fragment>
+                <p class="mid">{formatPct(r.lossless.pct)}</p>
+                <svg class="bar thin" viewBox="0 0 100 6" preserveAspectRatio="none" aria-hidden="true">
+                  <rect class="track" width="100" height="6" /><rect class="fill" width={left(r.lossless)} height="6" />
+                </svg>
+                <p class="how">{r.lossless.tag ?? r.lossless.how}</p>
+              </Fragment>
+            ) : (
+              <p class="none">No measured figure</p>
+            )}
+          </div>
+        </li>
+      ))}
+    </ul>
+
+    <div class="optimal card" data-reveal>
+      <span class="oico"><Icon name="equal" size={22} /></span>
+      <p>An already-compressed zip or video is reported as <b>“Already optimal”</b> in milliseconds. Logn doesn’t pretend.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+  }
+  @media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 520px) {
+    .grid { gap: 10px; }
+    .rcard { padding: 16px 14px; }
+    .top h3 { font-size: 0.9375rem; }
+    .ext { display: none; }
+  }
+  @media (max-width: 340px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+
+  .rcard { display: flex; flex-direction: column; padding: 20px; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  h3 { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; }
+  .ext {
+    flex: none;
+    padding: 4px 7px;
+    border-radius: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    color: var(--ink-2);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-3);
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+  .main { margin-top: 22px; }
+  .main .label { color: var(--cobalt-ink); }
+  .big {
+    margin-top: 2px;
+    font-size: clamp(3rem, 5vw, 3.75rem);
+    font-weight: 650;
+    font-stretch: 75%;
+    line-height: 1;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+    color: var(--mint);
+  }
+  .bar {
+    display: block;
+    width: 100%;
+    height: 8px;
+    margin-top: 12px;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .bar.thin { height: 5px; margin-top: 8px; }
+  .track { fill: var(--surface-2); }
+  .fill { fill: var(--mint-fill); }
+  .alt .fill { fill: var(--ink-3); }
+  .how { margin-top: 10px; color: var(--ink-2); font-size: 0.875rem; line-height: 1.4; }
+  .alt {
+    margin-top: auto;
+    padding-top: 16px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    column-gap: 10px;
+  }
+  .main + .alt { border-top: 1px solid var(--line); margin-top: 18px; }
+  .rcard .main { flex: 1; }
+  .mid { font-size: 1.125rem; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .alt .bar, .alt .how { grid-column: 1 / -1; }
+  .alt .how { margin-top: 8px; font-size: 0.8125rem; color: var(--ink-3); }
+  .none { color: var(--ink-3); font-size: 0.875rem; }
+  @media (max-width: 520px) { .none { grid-column: 1 / -1; margin-top: 4px; } }
+
+  .optimal {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 14px;
+    padding: 18px 22px;
+    color: var(--ink-2);
+  }
+  .optimal b { color: var(--ink); }
+  .oico {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--surface-2);
+    color: var(--ink-2);
+  }
+</style>

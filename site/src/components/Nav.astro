@@ -1,0 +1,86 @@
+---
+import AppIcon from './AppIcon.astro';
+---
+<header class="nav-shell">
+  <nav class="nav" aria-label="Primary">
+    <a class="brand" href="/" aria-label="Logn, home"><AppIcon size={28} eager /><span>Logn</span></a>
+    <ul class="links">
+      <li><a href="#results">Results</a></li>
+      <li><a href="#app">The app</a></li>
+      <li><a href="#safety">Safety</a></li>
+      <li><a href="#how">Under the hood</a></li>
+    </ul>
+    <a class="cta" href="#install">Get Logn</a>
+  </nav>
+</header>
+
+<style>
+  .nav-shell {
+    position: sticky;
+    top: 12px;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    padding-inline: var(--gutter);
+    pointer-events: none;
+  }
+  .nav {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    gap: clamp(12px, 3vw, 28px);
+    padding: 6px 6px 6px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: color-mix(in srgb, var(--surface) 72%, transparent);
+    -webkit-backdrop-filter: blur(20px) saturate(1.6);
+    backdrop-filter: blur(20px) saturate(1.6);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.25s, border-color 0.25s;
+  }
+  .nav:global(.scrolled) { box-shadow: var(--shadow-md); border-color: var(--line-2); }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 650;
+    font-size: 1.0625rem;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+  }
+  .brand :global(img) { width: 28px; height: 28px; }
+  .links { display: flex; gap: 4px; }
+  .links a {
+    display: block;
+    padding: 8px 12px;
+    border-radius: 999px;
+    color: var(--ink-2);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.15s, background-color 0.15s;
+  }
+  .links a:hover { color: var(--ink); background: var(--surface-2); }
+  .cta {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 16px;
+    border-radius: 999px;
+    background: var(--ink);
+    color: var(--bg);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: transform 0.18s var(--ease);
+  }
+  .cta:hover { transform: translateY(-1px); }
+  @media (max-width: 760px) {
+    .nav { width: 100%; justify-content: space-between; }
+    .links { display: none; }
+  }
+  @media (prefers-reduced-transparency: reduce) {
+    .nav { background: var(--surface); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  }
+</style>

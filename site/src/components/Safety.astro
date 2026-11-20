@@ -1,0 +1,50 @@
+---
+import Icon from './Icon.astro';
+
+const rules = [
+  { icon: 'file', title: 'The original is never overwritten.', text: 'Logn writes a new file. Yours stays exactly where it was, exactly as it was.' },
+  { icon: 'shrink', title: 'The output is never larger.', text: 'If nothing can be saved, Logn says “Already optimal” instead of handing you a bigger file.' },
+  { icon: 'lossless', title: 'Lossless is checked.', text: 'Every lossless result is verified against the original before it’s written.' },
+  { icon: 'undo', title: 'Replace can be undone.', text: 'Replace original moves the original to the Trash, and ⌘Z undoes it.' },
+];
+---
+<section class="sec" id="safety" aria-labelledby="safety-h">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <p class="eyebrow">Safety</p>
+      <h2 id="safety-h" class="h2">Squeezed. <span class="pinch">Nothing essential lost.</span></h2>
+    </div>
+    <ol class="rules">
+      {rules.map((r, i) => (
+        <li class="card" data-reveal>
+          <div class="head">
+            <span class="ico"><Icon name={r.icon} size={20} /></span>
+            <span class="n mono" aria-hidden="true">0{i + 1}</span>
+          </div>
+          <h3>{r.title}</h3>
+          <p>{r.text}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .rules { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  @media (max-width: 1000px) { .rules { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 520px) { .rules { grid-template-columns: minmax(0, 1fr); } }
+  .card { padding: 22px; }
+  .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
+  .ico {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--cobalt-soft);
+    color: var(--cobalt-ink);
+  }
+  .n { color: var(--ink-3); font-size: 0.8125rem; }
+  h3 { font-size: 1.125rem; font-weight: 600; line-height: 1.25; letter-spacing: -0.015em; text-wrap: balance; }
+  p { margin-top: 8px; color: var(--ink-2); font-size: 0.9375rem; line-height: 1.5; }
+</style>

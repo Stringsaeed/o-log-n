@@ -1,0 +1,25 @@
+---
+// The real app icon, from docs/media/icon-1024.png.
+import { Image } from 'astro:assets';
+import icon from '../assets/icon.png';
+
+interface Props {
+  size: number;
+  eager?: boolean;
+  class?: string;
+}
+const { size, eager = false, class: cls } = Astro.props;
+---
+<Image
+  src={icon}
+  alt=""
+  width={size}
+  height={size}
+  densities={[1, 2, 3]}
+  format="webp"
+  quality={88}
+  class={cls}
+  loading={eager ? 'eager' : 'lazy'}
+  fetchpriority={eager ? 'high' : 'auto'}
+  decoding="async"
+/>

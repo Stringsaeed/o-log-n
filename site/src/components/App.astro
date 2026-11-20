@@ -1,0 +1,188 @@
+---
+// The app itself: real screenshots from demo mode.
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import Shot from './Shot.astro';
+import smart from '../assets/drop-smart-dark.png';
+import lossless from '../assets/drop-lossless-dark.png';
+import working from '../assets/drop-compressing-dark.png';
+import done from '../assets/drop-done-dark.png';
+import tray from '../assets/tray-dark.png';
+import settings from '../assets/settings-dark.png';
+
+const states = [
+  { img: smart, name: 'Smart', text: 'The smallest file that still looks or sounds identical.', alt: 'Capsule with the Smart half highlighted: Drop to shrink.' },
+  { img: lossless, name: 'Lossless', text: 'Exact content, checked before it’s written.', alt: 'Capsule with the Lossless half highlighted: Drop exact.' },
+  { img: working, name: 'Working', text: 'The halves merge into one progress pill.', alt: 'The capsule as a progress pill with a ring, a file name and a speed.' },
+  { img: done, name: 'Done', text: 'The saving, then it gets out of your way.', alt: 'The capsule as a done pill showing a saving and a file name.' },
+];
+---
+<section class="sec app" id="app" aria-labelledby="app-h">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <p class="eyebrow">Two surfaces, no window</p>
+      <h2 id="app-h" class="h2">It shows up <span class="pinch">when you drag.</span></h2>
+      <p class="sub">Logn lives in the menu bar. Start dragging any file, anywhere, and a glass capsule slides in at the top-centre of the screen.</p>
+    </div>
+
+    <div class="bento">
+      <article class="card states" data-reveal>
+        <ol>
+          {states.map((s) => (
+            <li>
+              <Image src={s.img} alt={s.alt} width={336} height={128} densities={[1, 2]} format="webp" quality={82} loading="lazy" decoding="async" />
+              <p><b>{s.name}</b>{s.text}</p>
+            </li>
+          ))}
+        </ol>
+      </article>
+
+      <article class="card flip" data-reveal>
+        <div class="flip-art" aria-hidden="true">
+          <span class="mini"><i><Icon name="smart" size={14} />Smart</i><i><Icon name="lossless" size={14} />Lossless</i></span>
+          <span class="key">⌥</span>
+          <span class="mini"><i><Icon name="lossless" size={14} />Lossless</i><i><Icon name="smart" size={14} />Smart</i></span>
+        </div>
+        <h3>Hold <kbd>⌥</kbd> to flip the two halves.</h3>
+        <p>While you drag, Smart and Lossless swap sides.</p>
+      </article>
+
+      <article class="card speed" data-reveal>
+        <p class="stat"><span class="num">65</span><span class="unit">ms</span></p>
+        <h3>The tray opens in about 65&nbsp;ms.</h3>
+      </article>
+
+      <article class="tray" data-reveal>
+        <div class="wall" aria-hidden="true"></div>
+        <div class="tray-head">
+          <h3><span class="keys"><span class="sr">Control Option Space</span><span aria-hidden="true"><kbd>⌃</kbd><kbd>⌥</kbd><kbd class="space">Space</kbd></span></span> opens the tray.</h3>
+          <p>A Liquid Glass tray across the bottom quarter of the screen, with the live queue, history and settings.</p>
+        </div>
+        <figure>
+          <figcaption>The queue</figcaption>
+          <Shot
+            src={tray}
+            label="Screenshot of the Logn tray. Scrolls sideways on small screens."
+            alt="The Logn tray: mode and quality controls along the top, a drop well on the left, and a queue of files on the right, with a toast offering to undo a replaced original."
+          />
+        </figure>
+        <figure>
+          <figcaption>Settings</figcaption>
+          <Shot
+            src={settings}
+            label="Screenshot of Logn settings. Scrolls sideways on small screens."
+            alt="Settings, shown inside the tray: presence, compression and output options in three columns."
+          />
+        </figure>
+        <p class="cap">Real screenshots, taken in the app’s built-in demo mode. The file names and figures inside them are placeholders, not measurements.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .app { background: var(--bg-2); border-block: 1px solid var(--line); }
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .card { padding: clamp(20px, 2.6vw, 28px); }
+  h3 { font-size: 1.25rem; font-weight: 600; line-height: 1.2; letter-spacing: -0.02em; }
+  .card > p { margin-top: 8px; color: var(--ink-2); font-size: 0.9375rem; line-height: 1.5; }
+  .tray-head p { margin-top: 8px; font-size: 0.9375rem; line-height: 1.5; }
+
+  .states { grid-column: span 7; grid-row: span 2; }
+  .states ol { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px 16px; height: 100%; align-content: space-between; }
+  .states :global(img) { width: 100%; height: auto; border-radius: 14px; box-shadow: 0 0 0 1px var(--line); }
+  .states li p { margin-top: 12px; color: var(--ink-2); font-size: 0.9375rem; line-height: 1.45; }
+  .states li b { display: block; color: var(--ink); font-size: 1rem; }
+
+  .flip, .speed { grid-column: span 5; }
+  .flip-art {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 22px;
+    padding: 22px 12px;
+    border-radius: 16px;
+    background:
+      radial-gradient(80% 120% at 50% 0%, #2b5cf2, #0c1f73);
+  }
+  .mini {
+    display: flex;
+    padding: 3px;
+    border-radius: 999px;
+    background: rgba(18, 22, 40, 0.72);
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+    color: rgba(255, 255, 255, 0.86);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    font-style: normal;
+  }
+  .mini i { display: flex; align-items: center; gap: 4px; padding: 7px 9px; border-radius: 999px; font-style: normal; }
+  .mini i:first-child { background: rgba(72, 118, 232, 0.6); box-shadow: inset 0 0 0 1px #86abff; color: #fff; }
+  .key {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 9px;
+    background: #fff;
+    color: #0b1b52;
+    font-weight: 700;
+    box-shadow: 0 3px 0 rgba(0, 0, 40, 0.4);
+  }
+  @media (max-width: 420px) { .mini i { padding: 6px 7px; } .mini :global(svg) { display: none; } }
+
+  .speed { display: flex; flex-direction: column; justify-content: flex-end; }
+  .card > .stat { display: flex; align-items: baseline; gap: 6px; margin: 0 0 14px; color: var(--ink); }
+  .num {
+    font-size: clamp(3.5rem, 7vw, 5rem);
+    font-weight: 650;
+    font-stretch: 75%;
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .unit { color: var(--ink-3); font-size: 1.25rem; font-weight: 600; }
+
+  .tray {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    grid-column: 1 / -1;
+    display: grid;
+    gap: 22px;
+    padding: clamp(22px, 3.4vw, 44px);
+    border-radius: var(--r-lg);
+    color: #fff;
+    box-shadow: 0 0 0 1px var(--line), var(--shadow-md);
+  }
+  .wall {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(60% 70% at 8% 112%, rgba(52, 211, 153, 0.34), transparent 62%),
+      radial-gradient(55% 60% at 98% -10%, rgba(129, 102, 255, 0.5), transparent 64%),
+      radial-gradient(90% 90% at 50% 0%, #2350de 0%, #1a3fc0 38%, #0c1f73 72%, #070f3d 100%);
+  }
+  .tray-head { max-width: 58ch; }
+  .tray-head h3 { font-size: clamp(1.25rem, 2.4vw, 1.625rem); }
+  .tray-head p { color: rgba(255, 255, 255, 0.84); }
+  .keys kbd { margin-right: 5px; background: rgba(255, 255, 255, 0.16); border-color: rgba(255, 255, 255, 0.34); color: #fff; font-size: 0.8em; }
+  .keys .space { padding-inline: 0.7em; }
+  figure { display: grid; gap: 10px; min-width: 0; }
+  figcaption { color: rgba(255, 255, 255, 0.8); font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+  .cap { color: rgba(255, 255, 255, 0.78); font-size: 0.875rem; line-height: 1.5; }
+
+  @media (max-width: 900px) {
+    .states, .flip, .speed { grid-column: 1 / -1; grid-row: auto; }
+  }
+  @media (max-width: 520px) {
+    .states ol { grid-template-columns: minmax(0, 1fr); }
+  }
+</style>
