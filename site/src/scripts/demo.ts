@@ -87,7 +87,10 @@ function sub(h: Element, on: boolean) {
 }
 function clearTarget() { halves().forEach((h) => { h.classList.remove('is-target'); sub(h, false); }); }
 function inView() { const r = slot.getBoundingClientRect(); return r.top > -10 && r.bottom < window.innerHeight + 10; }
-function unfloat() { capsule.classList.remove('floating'); }
+// While the capsule floats at the top of the viewport, the page hides its nav
+// (see Nav.astro) so nothing covers the drop target.
+function float() { capsule.classList.add('floating'); document.documentElement.classList.add('capsule-floating'); }
+function unfloat() { capsule.classList.remove('floating'); document.documentElement.classList.remove('capsule-floating'); }
 function setPillsHidden(busy: boolean, done: boolean) {
   $('.cpill-busy', capsule).setAttribute('aria-hidden', String(busy));
   el.donePill.setAttribute('aria-hidden', String(done));
@@ -295,7 +298,7 @@ window.addEventListener('dragenter', (e) => {
   dragDepth++;
   if (running) return;
   if (dragDepth === 1) {
-    if (!inView()) capsule.classList.add('floating');
+    if (!inView()) float();
     arm();
   }
 });

@@ -41,10 +41,10 @@ const states = [
         <div class="flip-art" aria-hidden="true">
           <span class="mini"><i><Icon name="smart" size={14} />Smart</i><i><Icon name="lossless" size={14} />Lossless</i></span>
           <span class="key">⌥</span>
-          <span class="mini"><i><Icon name="lossless" size={14} />Lossless</i><i><Icon name="smart" size={14} />Smart</i></span>
+          <span class="mini flipped"><i><Icon name="smart" size={14} />Smart</i><i><Icon name="lossless" size={14} />Lossless</i></span>
         </div>
-        <h3>Hold <kbd>⌥</kbd> to flip the two halves.</h3>
-        <p>While you drag, Smart and Lossless swap sides.</p>
+        <h3>Hold <kbd>⌥</kbd> to flip the targeted half.</h3>
+        <p>It switches between Smart and Lossless in place, so there is no sideways aiming.</p>
       </article>
 
       <article class="card speed" data-reveal>
@@ -122,7 +122,7 @@ const states = [
     font-style: normal;
   }
   .mini i { display: flex; align-items: center; gap: 4px; padding: 7px 9px; border-radius: 999px; font-style: normal; }
-  .mini i:first-child { background: rgba(72, 118, 232, 0.6); box-shadow: inset 0 0 0 1px #86abff; color: #fff; }
+  .mini:not(.flipped) i:first-child, .mini.flipped i:last-child { background: rgba(72, 118, 232, 0.6); box-shadow: inset 0 0 0 1px #86abff; color: #fff; }
   .key {
     flex: none;
     display: grid;
