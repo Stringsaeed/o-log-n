@@ -10,7 +10,7 @@ interface Props {
 const { title, description } = Astro.props;
 const canonical = new URL(Astro.url.pathname, Astro.site).href;
 const og = new URL('/og.png', Astro.site).href;
-const ogAlt = 'The Logn icon and its Smart and Lossless capsule, above the words: Drag. Drop. Smaller.';
+const ogAlt = 'A pen-and-ink drawing of the Logn icon on the curve y = log n, above the words: Drag. Drop. Smaller.';
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'SoftwareApplication',
@@ -31,8 +31,8 @@ const jsonLd = {
     <link rel="canonical" href={canonical} />
     <meta name="referrer" content="no-referrer" />
     <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" content="#f6f7fa" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#06080e" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#f4f1e8" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#16150f" media="(prefers-color-scheme: dark)" />
 
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Logn" />
@@ -54,7 +54,7 @@ const jsonLd = {
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <Font cssVariable="--font-sans" preload />
+    <Font cssVariable="--font-serif" preload={[{ weight: 400, style: 'normal' }]} />
     <Font cssVariable="--font-mono" />
     <Font cssVariable="--font-math" />
     <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />

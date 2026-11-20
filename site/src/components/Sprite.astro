@@ -3,6 +3,31 @@
 ---
 <svg class="sprite" aria-hidden="true" focusable="false" width="0" height="0">
   <defs>
+    <!-- Pen wobble: a slight displacement, so ruled lines look hand-drawn.
+         Used on small static drawings only. -->
+    <filter id="wobble" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.045" numOctaves="2" seed="7" result="n" />
+      <feDisplacementMap in="SourceGraphic" in2="n" scale="2.4" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+    <!-- Hatch fills for inline drawings. They take the sprite's colour, which is the ink. -->
+    <pattern id="p-h1" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+      <line x1="0" y1="3.500" x2="7" y2="3.500" stroke="currentColor" stroke-width="1" />
+    </pattern>
+    <pattern id="p-h2" width="4.500" height="4.500" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+      <line x1="0" y1="2.250" x2="4.500" y2="2.250" stroke="currentColor" stroke-width="1.050" />
+    </pattern>
+    <pattern id="p-h2b" width="4.500" height="4.500" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="2.250" x2="4.500" y2="2.250" stroke="currentColor" stroke-width="1.050" />
+    </pattern>
+    <pattern id="p-h3" width="3.200" height="3.200" patternUnits="userSpaceOnUse" patternTransform="rotate(-45)">
+      <line x1="0" y1="1.600" x2="3.200" y2="1.600" stroke="currentColor" stroke-width="1.100" />
+    </pattern>
+    <pattern id="p-h3b" width="3.200" height="3.200" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+      <line x1="0" y1="1.600" x2="3.200" y2="1.600" stroke="currentColor" stroke-width="1.100" />
+    </pattern>
+    <pattern id="p-h4" width="3.600" height="3.600" patternUnits="userSpaceOnUse" patternTransform="rotate(8)">
+      <line x1="0" y1="1.800" x2="3.600" y2="1.800" stroke="currentColor" stroke-width="1" />
+    </pattern>
     <linearGradient id="g-ico" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#4f8ef7" /><stop offset="1" stop-color="#1e3a8a" />
     </linearGradient>
@@ -75,5 +100,5 @@
 </svg>
 
 <style>
-  .sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+  .sprite { position: absolute; width: 0; height: 0; overflow: hidden; color: var(--ink); }
 </style>

@@ -29,7 +29,7 @@ const example = KINDS.png.smart!;
 
           <div class="main">
             <p class="label"><Icon name="smart" size={15} />Smart</p>
-            <p class="big">{formatPct(r.smart!.pct)}</p>
+            <p class="big engraved" data-t={formatPct(r.smart!.pct)}>{formatPct(r.smart!.pct)}</p>
             <NumberLine left={100 - r.smart!.pct} />
             <p class="fn"><span class="math" aria-hidden="true"><i>n</i> ↦ {formatLeft(r.smart!.pct)}<i>n</i></span></p>
             <p class="how">{r.smart!.how}</p>
@@ -64,74 +64,69 @@ const example = KINDS.png.smart!;
   .grid {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 14px;
+    gap: 22px 20px;
   }
   @media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 520px) {
-    .grid { gap: 10px; }
+    .grid { gap: 16px 14px; }
     .rcard { padding: 16px 14px; }
-    .top h3 { font-size: 0.9375rem; }
+    .top h3 { font-size: 1rem; }
     .ext { display: none; }
   }
   @media (max-width: 340px) { .grid { grid-template-columns: minmax(0, 1fr); } }
 
   .rcard { display: flex; flex-direction: column; padding: 20px; }
   .top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-  h3 { font-size: 1rem; font-weight: 600; letter-spacing: -0.01em; }
+  h3 { font-size: 1.125rem; font-weight: 700; }
   .ext {
     flex: none;
-    padding: 4px 7px;
-    border-radius: 6px;
-    background: var(--surface-2);
-    border: 1px solid var(--line);
-    color: var(--ink-2);
-    font-size: 0.6875rem;
-    font-weight: 600;
+    padding: 3px 6px;
+    border-radius: 4px;
+    border: var(--stroke) solid var(--ink);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
     line-height: 1;
   }
   .label {
     display: flex;
     align-items: center;
     gap: 6px;
-    color: var(--ink-3);
-    font-size: 0.8125rem;
-    font-weight: 600;
+    color: var(--ink-2);
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
-  .main { margin-top: 22px; }
-  .main .label { color: var(--cobalt-ink); }
+  .main { flex: 1; margin-top: 20px; }
+  .main .label { color: var(--spot); }
   .big {
-    margin-top: 2px;
-    font-size: clamp(3rem, 5vw, 3.75rem);
-    font-weight: 650;
-    font-stretch: 75%;
+    margin-top: 4px;
+    font-size: clamp(3.25rem, 5.4vw, 4.25rem);
+    font-weight: 700;
     line-height: 1;
-    letter-spacing: -0.04em;
-    font-variant-numeric: tabular-nums;
-    color: var(--mint);
+    letter-spacing: -0.02em;
   }
-  .fn { margin-top: 6px; color: var(--ink); font-size: 1.0625rem; }
-  .how { margin-top: 10px; color: var(--ink-2); font-size: 0.875rem; line-height: 1.4; }
+  .fn { margin-top: 6px; color: var(--ink); font-size: 1.1875rem; }
+  .how { margin-top: 8px; color: var(--ink-2); font-size: 1rem; line-height: 1.35; }
   .alt {
-    margin-top: auto;
-    padding-top: 16px;
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: var(--stroke) dashed var(--rule-2);
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: baseline;
     column-gap: 10px;
   }
-  .main + .alt { border-top: 1px solid var(--line); margin-top: 18px; }
-  .rcard .main { flex: 1; }
-  .mid { font-size: 1.125rem; font-weight: 650; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .mid { font-size: 1.25rem; font-weight: 700; }
   .alt :global(.nl), .alt .how { grid-column: 1 / -1; }
-  .alt .how { margin-top: 8px; font-size: 0.8125rem; color: var(--ink-3); }
-  .none { color: var(--ink-3); font-size: 0.875rem; }
-  @media (max-width: 520px) { .none { grid-column: 1 / -1; margin-top: 4px; } }
+  .alt .how { margin-top: 6px; font-size: 0.9375rem; color: var(--ink-3); }
+  .none { grid-column: 1 / -1; margin-top: 4px; color: var(--ink-3); font-size: 0.9375rem; font-style: italic; }
 
   .optimal {
     display: flex;
     align-items: center;
     gap: 16px;
-    margin-top: 14px;
+    margin-top: 26px;
     padding: 18px 22px;
     color: var(--ink-2);
   }
@@ -142,8 +137,17 @@ const example = KINDS.png.smart!;
     place-items: center;
     width: 42px;
     height: 42px;
-    border-radius: 12px;
-    background: var(--surface-2);
-    color: var(--ink-2);
+    border-radius: 50%;
+    border: var(--stroke) solid var(--ink);
+    color: var(--ink);
+  }
+  /* Narrow cards: tighter labels, so nothing runs past the card's edge. */
+  @media (max-width: 520px) {
+    .label { font-size: 0.75rem; letter-spacing: 0.03em; gap: 4px; }
+    .label :global(svg) { display: none; }
+    .alt { grid-template-columns: minmax(0, 1fr) auto; column-gap: 6px; }
+    .mid { font-size: 1.125rem; }
+    .big { font-size: 2.875rem; }
+    .fn { font-size: 1.0625rem; }
   }
 </style>

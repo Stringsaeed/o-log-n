@@ -26,19 +26,34 @@ const [avif, webp] = await Promise.all([
 </div>
 
 <style>
+  /* A plate: the screenshot untouched, in an ink frame, on a hatched shadow.
+     The scroller leaves room for the shadow so it is never clipped. */
   .scroller {
     overflow-x: auto;
+    padding: 0 12px 13px 0;
     scrollbar-width: thin;
-    scrollbar-color: rgba(255, 255, 255, 0.4) transparent;
+    scrollbar-color: var(--ink-3) transparent;
   }
-  .scroller:focus-visible { outline: 2px solid #fff; outline-offset: 4px; border-radius: 12px; }
-  picture { display: block; min-width: 980px; }
+  .scroller:focus-visible { outline-offset: 2px; border-radius: 12px; }
+  picture { position: relative; isolation: isolate; display: block; min-width: 980px; }
+  picture::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 2.2% / 10.1%;
+    background-color: var(--ink);
+    -webkit-mask-image: var(--cross-3);
+    mask-image: var(--cross-3);
+    transform: translate(9px, 10px);
+  }
   img {
     display: block;
     width: 100%;
     height: auto;
     /* Matches the tray's own corner radius, so no wallpaper shows at the corners. */
     border-radius: 2.2% / 10.1%;
-    box-shadow: 0 30px 60px -24px rgba(0, 0, 20, 0.8);
+    outline: 2px solid var(--ink);
+    outline-offset: -1px;
   }
 </style>

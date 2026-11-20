@@ -54,11 +54,32 @@ The switches are applied at build time, so the page is correct without JavaScrip
 | `src/components/Stage.astro`, `src/scripts/demo.ts` | The interactive capsule demo |
 | `src/components/*.astro` | Nav, Hero, Results, App, Safety, How, Install, Footer |
 | `src/components/Figure.astro`, `NumberLine.astro`, `HeroPlot.astro` | The log-axis figure, the 0-to-n number lines, and the hero's plotted curve |
-| `src/styles/global.css` | Design tokens (light and dark) and base styles |
+| `src/styles/global.css` | Paper, ink and hatching tokens (light and dark) and base styles |
+| `src/components/InkIcon.astro` | The app icon redrawn in pen and ink, for the hero |
+| `scripts/hatch-tiles.mjs` | Generates the hatch mask tiles |
 | `src/assets/` | PNG masters, cropped from `docs/media/`. Astro makes the AVIF and WebP sizes at build time |
 | `public/` | Social card, icons, `robots.txt`, `sitemap.xml`, `_headers` |
 
-Fonts are Instrument Sans and Geist Mono, read from the `@fontsource-variable` npm packages, and the Computer Modern faces from the `katex` package for notation. All are under the SIL Open Font License and self-hosted.
+The typeface is Computer Modern throughout, the face of a LaTeX paper: roman for text, the maths italic for variables, and the typewriter face for sizes and commands. The files come from the `katex` npm package, are under the SIL Open Font License, and are self-hosted.
+
+## Ink and paper
+
+The site is drawn as pen and ink on paper. Tone comes from hatching, never from grey fills, gradients or blur.
+
+- **Hatching** is a set of mask tiles (`--hatch-1` to `--hatch-3`, their mirrored `b` versions for cross-hatching, and `--stipple`) in `src/styles/global.css`. Paint with any ink by setting `background-color` on the masked element. Regenerate them with `node scripts/hatch-tiles.mjs`.
+- **Shadows** are an offset copy of the shape, filled with hatching, on `::after`. The sheet itself sits on `::before` so the shadow can go behind it; see `.card` and `.btn`.
+- **Engraved numerals** (`.engraved`) are an ink outline around a hatched fill. Give the element a `data-t` copy of its text. They fall back to solid ink under `forced-colors` and `prefers-contrast: more`.
+- **Inline drawings** (the ink icon, the hero's shaded curve) use the `<pattern>` fills and the `#wobble` displacement filter defined in `Sprite.astro`.
+- **Dark scheme** is the same drawing in chalk on a dark sheet: only `--paper`, `--ink` and `--spot` change.
+
+Rules that keep it working:
+
+- No body text on hatching. The title block has a paper-coloured edge around its letters for this reason.
+- One hatch tone per meaning. If density varied between result cards, it would read as data.
+- Fig. 1's marks are plain, not hatched: in a chart, texture reads as an encoding.
+- Bars are revealed by `clip-path`, never scaled, so their hatching keeps one tone.
+- Never put `transform`, `filter` or `overflow: hidden` on `.stage` or an ancestor of the capsule. The capsule becomes `position: fixed` when a file is dragged in, and those properties would trap it.
+- Screenshots are shown untouched, as framed plates.
 
 ## Notation
 

@@ -38,35 +38,48 @@ const lead = downloadLive && BREW_LIVE
 </section>
 
 <style>
+  /* The one reversed block: paper-coloured line on solid ink, like a
+     scratchboard, with the hatching scraped out of the black. */
   .band {
+    --on: var(--paper);
     position: relative;
     isolation: isolate;
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: clamp(36px, 6vw, 72px) clamp(16px, 4vw, 56px) clamp(20px, 4vw, 56px);
     border-radius: var(--r-xl);
-    color: #fff;
+    color: var(--on);
     text-align: center;
-    box-shadow: var(--shadow-lg);
   }
+  .band::before, .band::after, .wall { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
+  .band::before { z-index: -2; background-color: var(--ink); }
+  /* shadow */
+  .band::after {
+    z-index: -3;
+    background-color: var(--ink);
+    -webkit-mask-image: var(--cross-3);
+    mask-image: var(--cross-3);
+    transform: translate(10px, 11px);
+  }
+  /* scraped hatching, fading toward the middle so the text sits on solid black */
   .wall {
-    position: absolute;
-    inset: 0;
     z-index: -1;
-    background:
-      radial-gradient(60% 70% at 10% 110%, rgba(52, 211, 153, 0.36), transparent 62%),
-      radial-gradient(55% 60% at 96% -8%, rgba(129, 102, 255, 0.5), transparent 64%),
-      radial-gradient(90% 90% at 50% 0%, #2350de 0%, #1a3fc0 38%, #0c1f73 72%, #070f3d 100%);
+    background-color: var(--on);
+    opacity: 0.2;
+    -webkit-mask-image: var(--hatch-2), radial-gradient(60% 75% at 50% 45%, transparent 55%, #000 100%);
+    mask-image: var(--hatch-2), radial-gradient(60% 75% at 50% 45%, transparent 55%, #000 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
   }
-  .band :global(.icon) { width: 72px; height: 72px; margin-bottom: 20px; filter: drop-shadow(0 12px 20px rgba(0, 0, 40, 0.45)); }
-  .lead { max-width: 52ch; margin-top: 14px; color: rgba(255, 255, 255, 0.86); font-size: 1.0625rem; text-wrap: pretty; }
+  .band :global(.icon) { width: 72px; height: 72px; margin-bottom: 18px; }
+  .band :global(.h2) { color: var(--on); }
+  .lead { max-width: 52ch; margin-top: 14px; font-size: 1.1875rem; text-wrap: pretty; }
 
   .routes {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 14px;
+    gap: 18px;
     width: 100%;
     max-width: 860px;
     margin-top: clamp(28px, 4vw, 44px);
@@ -78,41 +91,41 @@ const lead = downloadLive && BREW_LIVE
     flex-direction: column;
     gap: 14px;
     padding: 20px;
-    border-radius: 22px;
-    background: rgba(8, 12, 34, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.14);
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
+    border-radius: var(--r-lg);
+    border: var(--stroke) solid var(--on);
+    background: var(--ink);
   }
   .rt { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-  h3 { font-size: 1.0625rem; font-weight: 600; }
+  h3 { font-size: 1.25rem; font-weight: 700; }
   .badge {
-    padding: 5px 10px;
+    padding: 4px 10px;
     border-radius: 999px;
-    background: rgba(252, 211, 77, 0.16);
-    color: #fde08a;
-    font-size: 0.75rem;
-    font-weight: 600;
+    border: var(--stroke) dashed var(--on);
+    font-size: 0.875rem;
+    font-style: italic;
     line-height: 1.2;
   }
-  .badge.live { background: rgba(52, 211, 153, 0.2); color: #7ff0c4; }
-  .route p { color: rgba(255, 255, 255, 0.78); font-size: 0.875rem; line-height: 1.45; }
+  .badge.live { border-style: solid; background: var(--on); color: var(--ink); font-style: normal; font-weight: 700; }
+  .route p { font-size: 1rem; line-height: 1.4; opacity: 0.86; }
   .route :global(.wide) { width: 100%; }
-  .route :global(.btn-soon) { background: rgba(255, 255, 255, 0.07); border-color: rgba(255, 255, 255, 0.3); color: rgba(255, 255, 255, 0.86); }
-  .route :global(.btn-primary) { background: #fff; color: #0b1b52; box-shadow: 0 10px 24px -10px rgba(0, 0, 40, 0.7); }
-  .route :global(a.btn-primary[href]:hover) { background: #eef2ff; }
+  /* Buttons inside the reversed block take its colours. */
+  .route :global(.btn) { color: var(--on); }
+  .route :global(.btn)::before { border-color: var(--on); background-color: var(--ink); }
+  .route :global(.btn)::after { background-color: var(--on); }
+  .route :global(.btn-primary) { color: var(--ink); }
+  .route :global(.btn-primary)::before { background-color: var(--on); }
+  .route :global(.btn-soon)::before { background-color: transparent; }
 
   .code {
     display: flex;
     align-items: center;
     gap: 8px;
-    min-height: 46px;
+    min-height: 48px;
     padding: 5px 5px 5px 14px;
-    border-radius: 14px;
-    background: rgba(0, 0, 20, 0.42);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    border: var(--stroke) dashed var(--on);
   }
-  code { flex: 1; min-width: 0; padding-block: 6px; overflow-wrap: anywhere; font-size: 0.8125rem; line-height: 1.4; color: #e6ecff; }
+  code { flex: 1; min-width: 0; padding-block: 6px; overflow-wrap: anywhere; font-size: 0.9375rem; line-height: 1.35; }
   .copy {
     flex: none;
     display: inline-flex;
@@ -120,18 +133,14 @@ const lead = downloadLive && BREW_LIVE
     gap: 6px;
     min-height: 36px;
     padding: 0 12px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(255, 255, 255, 0.12);
-    color: #fff;
-    font-size: 0.8125rem;
-    font-weight: 600;
+    border-radius: 8px;
+    border: var(--stroke) solid var(--on);
+    background: transparent;
+    color: var(--on);
+    font-size: 0.9375rem;
+    font-weight: 700;
   }
-  .copy:hover:not(:disabled) { background: rgba(255, 255, 255, 0.2); }
-  .copy:focus-visible { outline: 2px solid #fff; }
-  .copy:disabled { color: rgba(255, 255, 255, 0.62); cursor: not-allowed; background: transparent; }
-
-  @media (prefers-reduced-transparency: reduce) {
-    .route { background: #0b1030; -webkit-backdrop-filter: none; backdrop-filter: none; }
-  }
+  .copy:hover:not(:disabled) { background: var(--on); color: var(--ink); }
+  .copy:focus-visible { outline: 2px solid var(--on); }
+  .copy:disabled { border-style: dashed; opacity: 0.7; cursor: not-allowed; }
 </style>

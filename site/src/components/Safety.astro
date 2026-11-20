@@ -31,17 +31,16 @@ const rules = [
 </section>
 
 <style>
-  .rules { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+  .rules { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px 20px; }
   @media (max-width: 1000px) { .rules { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
   @media (max-width: 520px) { .rules { grid-template-columns: minmax(0, 1fr); } }
   .card { padding: 22px; }
-  .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
-  .head { align-items: baseline; min-height: 2.4rem; }
-  .formula { color: var(--cobalt-ink); font-size: 1.375rem; }
+  .head { display: flex; align-items: baseline; justify-content: space-between; min-height: 2.4rem; margin-bottom: 26px; padding-bottom: 14px; border-bottom: var(--stroke) dashed var(--rule-2); }
+  .formula { color: var(--spot); font-size: 1.4375rem; }
+  .formula :global(i) { font-style: italic; }
   /* The prime glyph is drawn full-size, to be raised: do what TeX does. */
   .formula :global(.prime) { display: inline-block; font-size: 0.72em; transform: translateY(-0.42em); margin-left: 0.04em; }
-  .formula :global(i) { font-style: italic; }
-  .n { color: var(--ink-3); font-size: 0.8125rem; }
-  h3 { font-size: 1.125rem; font-weight: 600; line-height: 1.25; letter-spacing: -0.015em; text-wrap: balance; }
-  .card p { margin-top: 8px; color: var(--ink-2); font-size: 0.9375rem; line-height: 1.5; }
+  .n { color: var(--ink-3); font-size: 0.9375rem; }
+  h3 { font-size: 1.25rem; font-weight: 700; line-height: 1.2; text-wrap: balance; }
+  .card p { margin-top: 8px; color: var(--ink-2); font-size: 1.0625rem; line-height: 1.4; }
 </style>

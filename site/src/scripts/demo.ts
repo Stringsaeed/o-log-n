@@ -159,6 +159,7 @@ function outcome(item: Item, mode: Mode): Outcome {
 function render(o: Outcome) {
   result.setAttribute('data-kind', o.type);
   el.file.textContent = o.file; el.mode.textContent = o.mode; el.big.textContent = o.big;
+  el.big.dataset.t = o.big; // the hatched fill is drawn from this copy
   el.how.textContent = o.how; el.note.textContent = o.note;
   const left = o.type === 'saved' ? 1 - o.pct! / 100 : 1;
   el.bar.style.setProperty('--left', String(left));

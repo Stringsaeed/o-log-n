@@ -12,24 +12,22 @@ export default defineConfig({
   // Fonts are read from npm packages and self-hosted. Nothing is fetched at
   // build time or at run time.
   fonts: [
+    // Computer Modern, from the KaTeX package (SIL OFL): the typeface of a
+    // LaTeX paper. Roman for text, the maths italic for variables, and the
+    // typewriter face for file sizes and commands.
     {
       provider: fontProviders.local(),
-      name: 'Instrument Sans',
-      cssVariable: '--font-sans',
-      fallbacks: ['ui-sans-serif', 'system-ui', 'sans-serif'],
+      name: 'Logn Serif',
+      cssVariable: '--font-serif',
+      fallbacks: ['Iowan Old Style', 'Palatino Linotype', 'Georgia', 'serif'],
       options: {
         variants: [
-          {
-            src: ['@fontsource-variable/instrument-sans/files/instrument-sans-latin-wdth-normal.woff2'],
-            weight: '400 700',
-            stretch: '75% 100%',
-            style: 'normal',
-          },
+          { src: ['katex/dist/fonts/KaTeX_Main-Regular.woff2'], weight: '400', style: 'normal' },
+          { src: ['katex/dist/fonts/KaTeX_Main-Italic.woff2'], weight: '400', style: 'italic' },
+          { src: ['katex/dist/fonts/KaTeX_Main-Bold.woff2'], weight: '700', style: 'normal' },
         ],
       },
     },
-    // Notation: the Computer Modern faces from KaTeX (SIL OFL). Upright for
-    // digits, operators and "log"; italic for variables.
     {
       provider: fontProviders.local(),
       name: 'Logn Math',
@@ -44,17 +42,11 @@ export default defineConfig({
     },
     {
       provider: fontProviders.local(),
-      name: 'Geist Mono',
+      name: 'Logn Mono',
       cssVariable: '--font-mono',
       fallbacks: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
       options: {
-        variants: [
-          {
-            src: ['@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2'],
-            weight: '400 700',
-            style: 'normal',
-          },
-        ],
+        variants: [{ src: ['katex/dist/fonts/KaTeX_Typewriter-Regular.woff2'], weight: '400', style: 'normal' }],
       },
     },
   ],

@@ -71,19 +71,19 @@ const rows = RESULT_ORDER.map((id) => {
 </figure>
 
 <style>
+  /* One ink. Original is a hollow ring, the output a filled dot: the pair is
+     told apart by fill, not by hue, and the marks are left unhatched because
+     in a chart texture would read as data. */
   .fig {
-    --before: #3b63e0;
-    --after: #0a8f63;
-    margin-top: 14px;
+    --before: var(--spot);
+    --after: var(--spot);
+    margin-top: 26px;
     padding: clamp(18px, 2.6vw, 28px);
   }
-  @media (prefers-color-scheme: dark) {
-    .fig { --before: #6a8ff5; --after: #1faa78; }
-  }
   .head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 24px; margin-bottom: 12px; }
-  .legend { display: flex; gap: 18px; color: var(--ink-2); font-size: 0.875rem; font-weight: 500; }
+  .legend { display: flex; gap: 18px; color: var(--ink-2); font-size: 1rem; }
   .legend li { display: flex; align-items: center; gap: 7px; }
-  .readout { min-height: 1.4em; color: var(--ink-2); font-size: 0.8125rem; white-space: pre-wrap; }
+  .readout { min-height: 1.4em; color: var(--ink-2); font-size: 0.9375rem; white-space: pre-wrap; }
 
   .rows li, .axis {
     display: grid;
@@ -97,30 +97,30 @@ const rows = RESULT_ORDER.map((id) => {
     border-radius: 10px;
     transition: background-color 0.12s;
   }
-  .rows li:hover, .rows li:focus-visible { background: var(--surface-2); }
+  .rows li:hover, .rows li:focus-visible { background: var(--paper-2); }
   .rows li:focus-visible { outline-offset: -2px; }
-  .name { font-size: 0.9375rem; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .val { text-align: right; font-size: 0.9375rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+  .name { font-size: 1.0625rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .val { text-align: right; font-size: 1.0625rem; font-weight: 700; }
   svg { display: block; overflow: visible; }
-  .grid { stroke: var(--line); stroke-width: 1; }
-  .link { stroke: var(--after); stroke-width: 2; stroke-linecap: round; opacity: 0.45; }
-  .before { fill: var(--surface); stroke: var(--before); stroke-width: 2; }
-  .after { fill: var(--after); stroke: var(--surface); stroke-width: 2; }
-  .rows li:hover .before, .rows li:focus-visible .before { fill: var(--surface-2); }
-  .rows li:hover .after, .rows li:focus-visible .after { stroke: var(--surface-2); }
+  .grid { stroke: var(--rule); stroke-width: 1; }
+  .link { stroke: var(--after); stroke-width: 2; stroke-linecap: round; }
+  .before { fill: var(--paper); stroke: var(--before); stroke-width: 2; }
+  .after { fill: var(--after); stroke: var(--paper); stroke-width: 2; }
+  .rows li:hover .before, .rows li:focus-visible .before { fill: var(--paper-2); }
+  .rows li:hover .after, .rows li:focus-visible .after { stroke: var(--paper-2); }
   .axis { margin-top: 2px; }
-  .axis text { fill: var(--ink-3); font-family: var(--font-mono); font-size: 11px; }
-  figcaption { margin-top: 14px; padding-top: 14px; border-top: 1px solid var(--line); color: var(--ink-2); font-size: 0.875rem; line-height: 1.5; }
+  .axis text { fill: var(--ink-2); font-family: var(--font-mono); font-size: 13px; }
+  figcaption { margin-top: 14px; padding-top: 14px; border-top: var(--stroke) dashed var(--rule-2); color: var(--ink-2); font-size: 1rem; line-height: 1.4; }
   figcaption b { color: var(--ink); }
 
   /* Narrow screens: the name sits above its track, so the plot keeps its width. */
   @media (max-width: 640px) {
     .rows li { grid-template-columns: minmax(0, 1fr) 44px; column-gap: 8px; padding-block: 6px 0; }
-    .name { grid-column: 1 / -1; font-size: 0.8125rem; color: var(--ink-2); }
-    .val { font-size: 0.875rem; }
+    .name { grid-column: 1 / -1; font-size: 0.9375rem; color: var(--ink-2); }
+    .val { font-size: 1rem; }
     .axis { grid-template-columns: minmax(0, 1fr) 44px; column-gap: 8px; }
     .axis span:first-child { display: none; }
-    .axis text { font-size: 10px; }
+    .axis text { font-size: 11px; }
     .readout { display: none; }
   }
 </style>
