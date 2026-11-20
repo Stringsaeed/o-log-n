@@ -1,0 +1,47 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  macos:
+    # Keep this on the same image as the release build in build-macos.yml.
+    runs-on: xcode-27
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Build
+        run: swift build -c release -Xswiftc -warnings-as-errors
+
+      # The runner image has no timeout(1); GitHub's step timeout bounds each step instead.
+      - name: Test
+        timeout-minutes: 20
+        run: swift test --skip losslessJPEGBatchLeavesTheHeartbeatResponsive
+
+      # A wall-clock check (an instant skip must finish within 500 ms behind a JPEG batch).
+      # On a ~3-core runner the other tests' parallel fixture work dominates that clock,
+      # so it runs on its own, with the same threshold.
+      - name: Test (responsiveness, isolated)
+        timeout-minutes: 10
+        run: swift test --filter losslessJPEGBatchLeavesTheHeartbeatResponsive
+
+      - name: Bundle
+        run: scripts/bundle.sh
+
+      # --selftest-keys and --selftest need an interactive GUI session, so they are not run
+      # here: --selftest-keys calls NSApp.activate and shows the tray, and --selftest needs a
+      # display (NSScreen) for the panels, the hotkey, and the drag monitor.
+      - name: Selftest (replace)
+        timeout-minutes: 3
+        run: build/Logn.app/Contents/MacOS/OLogN --selftest-replace
+
+      - name: Selftest (history)
+        timeout-minutes: 3
+        run: build/Logn.app/Contents/MacOS/OLogN --selftest-history

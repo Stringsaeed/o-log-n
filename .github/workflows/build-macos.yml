@@ -1,0 +1,136 @@
+# Builds one tagged release: signed + notarized DMG, uploaded to the (draft) GitHub
+# release, which is then published. Stable releases also bump the Homebrew cask.
+name: Build macOS release
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        type: string
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  macos:
+    # macOS picks the window chrome from the linked SDK: below 26, apps get the flat pre-glass look.
+    runs-on: xcode-27
+    timeout-minutes: 75
+    env:
+      TAG: ${{ inputs.tag }}
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+
+      - name: Version
+        run: |
+          case "$TAG" in
+            v*) ;;
+            *) echo "::error::tag must look like vX.Y.Z (got ${TAG})"; exit 1 ;;
+          esac
+          version=$(tr -d '[:space:]' < version.txt)
+          [ "$version" = "${TAG#v}" ] || { echo "::error::version.txt is ${version} but the tag is ${TAG}"; exit 1; }
+
+      - name: Release notes
+        run: |
+          # release-please already stored these on the draft. Publish leaves that body in
+          # place. Logn has no updater, so nothing else consumes the file.
+          if ! gh release view "$TAG" --json body -q .body > "$RUNNER_TEMP/notes.md"; then
+            echo "Logn ${TAG#v}" > "$RUNNER_TEMP/notes.md"
+          fi
+
+      - name: Import the signing certificate
+        env:
+          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
+          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
+          APPLE_API_KEY_P8: ${{ secrets.APPLE_API_KEY_P8 }}
+        run: |
+          KEYCHAIN_PATH="$RUNNER_TEMP/logn-signing.keychain-db"
+          KEYCHAIN_PASSWORD="$(openssl rand -base64 32 | tr -d '\n')"
+          echo "::add-mask::$KEYCHAIN_PASSWORD"
+          echo "KEYCHAIN_PATH=$KEYCHAIN_PATH" >> "$GITHUB_ENV"
+
+          previous=()
+          while IFS= read -r line; do
+            line="${line//\"/}"
+            line="${line#"${line%%[![:space:]]*}"}"
+            line="${line%"${line##*[![:space:]]}"}"
+            [ -n "$line" ] && previous+=("$line")
+          done < <(security list-keychains -d user)
+
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+          # Stay unlocked for the build. Signing happens after swift build, which can
+          # outlast the default five-minute autolock.
+          security set-keychain-settings -lut 21600 "$KEYCHAIN_PATH"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH"
+
+          printf '%s' "$APPLE_CERTIFICATE" | base64 --decode > "$RUNNER_TEMP/certificate.p12"
+          security import "$RUNNER_TEMP/certificate.p12" -k "$KEYCHAIN_PATH" -P "$APPLE_CERTIFICATE_PASSWORD" -f pkcs12 -T /usr/bin/codesign
+          rm -f "$RUNNER_TEMP/certificate.p12"
+          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN_PATH" >/dev/null
+          if [ "${#previous[@]}" -eq 0 ]; then
+            security list-keychains -d user -s "$KEYCHAIN_PATH"
+          else
+            security list-keychains -d user -s "$KEYCHAIN_PATH" "${previous[@]}"
+          fi
+
+          printf '%s' "$APPLE_API_KEY_P8" > "$RUNNER_TEMP/AuthKey.p8"
+          chmod 600 "$RUNNER_TEMP/AuthKey.p8"
+
+      - name: Build, sign, notarize
+        env:
+          SIGN_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
+          NOTARY_KEY: ${{ runner.temp }}/AuthKey.p8
+          NOTARY_KEY_ID: ${{ secrets.APPLE_API_KEY }}
+          NOTARY_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+        run: scripts/release.sh "${TAG#v}"
+
+      - name: Upload and publish
+        run: |
+          version="${TAG#v}"
+          gh release upload "$TAG" "dist/Logn-${version}.dmg" "dist/Logn-${version}.dmg.sha256" --clobber
+          gh release edit "$TAG" --draft=false --latest
+
+      - name: Remove the signing keychain and notarization key
+        if: always()
+        run: |
+          keychain="${KEYCHAIN_PATH:-$RUNNER_TEMP/logn-signing.keychain-db}"
+          security delete-keychain "$keychain" >/dev/null 2>&1 || true
+          rm -f "$RUNNER_TEMP/AuthKey.p8" "$RUNNER_TEMP/certificate.p12"
+
+      - id: out
+        run: |
+          version="${TAG#v}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "sha=$(shasum -a 256 "dist/Logn-${version}.dmg" | awk '{print $1}')" >> "$GITHUB_OUTPUT"
+    outputs:
+      version: ${{ steps.out.outputs.version }}
+      sha: ${{ steps.out.outputs.sha }}
+
+  homebrew:
+    needs: macos
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ inputs.tag }}
+          path: logn
+      - uses: actions/checkout@v5
+        with:
+          repository: Stringsaeed/homebrew-tap
+          token: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          path: tap
+      - name: Bump cask
+        run: |
+          logn/scripts/release/update-cask.sh "${{ needs.macos.outputs.version }}" "${{ needs.macos.outputs.sha }}" tap
+          cd tap
+          git config user.name "logn-release[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Casks/logn.rb
+          git diff --cached --quiet && { echo "cask already current"; exit 0; }
+          git commit -m "logn ${{ needs.macos.outputs.version }}"
+          git push
