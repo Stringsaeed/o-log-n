@@ -122,3 +122,12 @@ export function formatBytes(bytes: number): string {
 export function formatPct(pct: number): string {
   return '−' + pct + '%';
 }
+
+/**
+ * The fraction of the sample that is left, for notation like "n ↦ 0.23n".
+ * Worked out from the measured percentage and rounded, because 1 - 77/100 is
+ * not exactly 0.23 in floating point.
+ */
+export function formatLeft(pct: number): string {
+  return String(Math.round((100 - pct) * 10) / 1000);
+}

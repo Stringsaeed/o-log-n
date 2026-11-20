@@ -1,24 +1,25 @@
 ---
-import Icon from './Icon.astro';
-
+// The prose is the rule. The formula restates it: x is your file, y is what
+// Logn writes, D(·) is decoded content.
 const rules = [
-  { icon: 'file', title: 'The original is never overwritten.', text: 'Logn writes a new file. Yours stays exactly where it was, exactly as it was.' },
-  { icon: 'shrink', title: 'The output is never larger.', text: 'If nothing can be saved, Logn says “Already optimal” instead of handing you a bigger file.' },
-  { icon: 'lossless', title: 'Lossless is checked.', text: 'Every lossless result is verified against the original before it’s written.' },
-  { icon: 'undo', title: 'Replace can be undone.', text: 'Replace original moves the original to the Trash, and ⌘Z undoes it.' },
+  { math: ['<i>x</i><span class="prime">′</span> = <i>x</i>'], title: 'The original is never overwritten.', text: 'Logn writes a new file. Yours stays exactly where it was, exactly as it was.' },
+  { math: ['|<i>y</i>| ≤ |<i>x</i>|'], title: 'The output is never larger.', text: 'If nothing can be saved, Logn says “Already optimal” instead of handing you a bigger file.' },
+  { math: ['<i>D</i>(<i>y</i>) = <i>D</i>(<i>x</i>)'], title: 'Lossless is checked.', text: 'Every lossless result is verified against the original before it’s written.' },
+  { math: ['undo ∘ replace = id'], title: 'Replace can be undone.', text: 'Replace original moves the original to the Trash, and ⌘Z undoes it.' },
 ];
 ---
 <section class="sec" id="safety" aria-labelledby="safety-h">
   <div class="wrap">
     <div class="sec-head" data-reveal>
-      <p class="eyebrow">Safety</p>
+      <p class="eyebrow"><span class="math">§3</span>Safety, as four invariants</p>
       <h2 id="safety-h" class="h2">Squeezed. <span class="pinch">Nothing essential lost.</span></h2>
+      <p class="sub">Let <span class="math"><i>x</i></span> be your file, <span class="math"><i>y</i></span> what Logn writes, and <span class="math"><i>D</i></span> the decoded content.</p>
     </div>
     <ol class="rules">
       {rules.map((r, i) => (
         <li class="card" data-reveal>
           <div class="head">
-            <span class="ico"><Icon name={r.icon} size={20} /></span>
+            <span class="formula math" aria-hidden="true" set:html={r.math[0]} />
             <span class="n mono" aria-hidden="true">0{i + 1}</span>
           </div>
           <h3>{r.title}</h3>
@@ -35,16 +36,12 @@ const rules = [
   @media (max-width: 520px) { .rules { grid-template-columns: minmax(0, 1fr); } }
   .card { padding: 22px; }
   .head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 28px; }
-  .ico {
-    display: grid;
-    place-items: center;
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background: var(--cobalt-soft);
-    color: var(--cobalt-ink);
-  }
+  .head { align-items: baseline; min-height: 2.4rem; }
+  .formula { color: var(--cobalt-ink); font-size: 1.375rem; }
+  /* The prime glyph is drawn full-size, to be raised: do what TeX does. */
+  .formula :global(.prime) { display: inline-block; font-size: 0.72em; transform: translateY(-0.42em); margin-left: 0.04em; }
+  .formula :global(i) { font-style: italic; }
   .n { color: var(--ink-3); font-size: 0.8125rem; }
   h3 { font-size: 1.125rem; font-weight: 600; line-height: 1.25; letter-spacing: -0.015em; text-wrap: balance; }
-  p { margin-top: 8px; color: var(--ink-2); font-size: 0.9375rem; line-height: 1.5; }
+  .card p { margin-top: 8px; color: var(--ink-2); font-size: 0.9375rem; line-height: 1.5; }
 </style>

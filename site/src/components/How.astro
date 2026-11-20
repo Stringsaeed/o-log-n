@@ -1,6 +1,7 @@
 ---
 import Icon from './Icon.astro';
 import { REQUIREMENTS } from '../config';
+import { KINDS, formatLeft } from '../data/results';
 
 const groups = [
   { title: 'Native Apple frameworks', tags: [['ImageIO'], ['VideoToolbox'], ['AudioToolbox'], ['PDFKit / Quartz'], ['Compression']] },
@@ -17,7 +18,7 @@ const facts = [
 <section class="sec how" id="how" aria-labelledby="how-h">
   <div class="wrap grid">
     <div data-reveal>
-      <p class="eyebrow">Under the hood</p>
+      <p class="eyebrow"><span class="math">§4</span>Under the hood</p>
       <h2 id="how-h" class="h2">Mostly <span class="pinch">your Mac itself.</span></h2>
       <div class="groups">
         {groups.map((g) => (
@@ -40,7 +41,10 @@ const facts = [
           </div>
         ))}
       </dl>
-      <p class="name">The repo is called <span class="mono">o-log-n</span>, as in <span class="mono">O(log n)</span>: big input, small result.</p>
+      <p class="name">
+        <b>On the name.</b> The repo is called <span class="mono">o-log-n</span>, as in <span class="math">O(log <i>n</i>)</span>: big input, small result.
+        A figure of speech, not a bound: <span class="math">{formatLeft(KINDS.png.smart!.pct)}<i>n</i></span> is still <span class="math">O(<i>n</i>)</span>.
+      </p>
     </div>
   </div>
 </section>
@@ -94,4 +98,6 @@ const facts = [
   dd { font-size: 1rem; font-weight: 500; }
   .name { margin-top: 18px; color: var(--ink-2); font-size: 0.9375rem; line-height: 1.5; }
   .name .mono { color: var(--ink); font-size: 0.9em; }
+  .name .math { color: var(--ink); }
+  .name b { color: var(--ink); }
 </style>

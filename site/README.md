@@ -53,8 +53,19 @@ The switches are applied at build time, so the page is correct without JavaScrip
 | `src/pages/index.astro` | The page: one component per section |
 | `src/components/Stage.astro`, `src/scripts/demo.ts` | The interactive capsule demo |
 | `src/components/*.astro` | Nav, Hero, Results, App, Safety, How, Install, Footer |
+| `src/components/Figure.astro`, `NumberLine.astro`, `HeroPlot.astro` | The log-axis figure, the 0-to-n number lines, and the hero's plotted curve |
 | `src/styles/global.css` | Design tokens (light and dark) and base styles |
 | `src/assets/` | PNG masters, cropped from `docs/media/`. Astro makes the AVIF and WebP sizes at build time |
 | `public/` | Social card, icons, `robots.txt`, `sitemap.xml`, `_headers` |
 
-Fonts are Instrument Sans and Geist Mono (both OFL), read from the `@fontsource-variable` npm packages and self-hosted.
+Fonts are Instrument Sans and Geist Mono, read from the `@fontsource-variable` npm packages, and the Computer Modern faces from the `katex` package for notation. All are under the SIL Open Font License and self-hosted.
+
+## Notation
+
+The site borrows the language of the name, O(log n). Keep it honest:
+
+- `n` always means the size of one measured sample. `n ↦ 0.23n` restates "−77%" for that sample; it is not a law for every file.
+- The curve y = log n is a nod to the name. It carries no labels about file size, because compression is not logarithmic, and the page says so ("0.23n is still O(n)").
+- The four formulas in the Safety section restate the prose beside them. The prose is the rule.
+- Fig. 1 plots the eight sample kinds that have a Smart figure, on a log axis. Its output sizes are derived from the measured percentages, and the caption says so.
+- Wrap notation in `<span class="math">`, with `<i>` around variables. The curve itself is generated from `Math.log` in `src/lib/curve.ts`.

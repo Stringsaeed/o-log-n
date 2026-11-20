@@ -33,3 +33,18 @@ if (copyBtn && cmd && !copyBtn.disabled) {
     }, () => {});
   });
 }
+
+// Fig. 1: hovering or focusing a row shows its sizes in the readout. The same
+// values are in each row's own text, so the readout never gates anything.
+const readout = document.querySelector<HTMLElement>('#fig-readout');
+if (readout) {
+  const rest = readout.dataset.default ?? '';
+  for (const row of document.querySelectorAll<HTMLElement>('.fig .rows li')) {
+    const show = () => { readout.textContent = row.dataset.readout ?? rest; };
+    const clear = () => { readout.textContent = rest; };
+    row.addEventListener('pointerenter', show);
+    row.addEventListener('focus', show);
+    row.addEventListener('pointerleave', clear);
+    row.addEventListener('blur', clear);
+  }
+}

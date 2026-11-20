@@ -28,6 +28,20 @@ export default defineConfig({
         ],
       },
     },
+    // Notation: the Computer Modern faces from KaTeX (SIL OFL). Upright for
+    // digits, operators and "log"; italic for variables.
+    {
+      provider: fontProviders.local(),
+      name: 'Logn Math',
+      cssVariable: '--font-math',
+      fallbacks: ['STIX Two Text', 'Cambria Math', 'Times New Roman', 'serif'],
+      options: {
+        variants: [
+          { src: ['katex/dist/fonts/KaTeX_Main-Regular.woff2'], weight: '400', style: 'normal' },
+          { src: ['katex/dist/fonts/KaTeX_Math-Italic.woff2'], weight: '400', style: 'italic' },
+        ],
+      },
+    },
     {
       provider: fontProviders.local(),
       name: 'Geist Mono',

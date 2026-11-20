@@ -20,7 +20,7 @@ const states = [
 <section class="sec app" id="app" aria-labelledby="app-h">
   <div class="wrap">
     <div class="sec-head" data-reveal>
-      <p class="eyebrow">Two surfaces, no window</p>
+      <p class="eyebrow"><span class="math">§2</span>Two surfaces, no window</p>
       <h2 id="app-h" class="h2">It shows up <span class="pinch">when you drag.</span></h2>
       <p class="sub">Logn lives in the menu bar. Start dragging any file, anywhere, and a glass capsule slides in at the top-centre of the screen.</p>
     </div>
@@ -48,7 +48,7 @@ const states = [
       </article>
 
       <article class="card speed" data-reveal>
-        <p class="stat"><span class="num">65</span><span class="unit">ms</span></p>
+        <p class="stat"><span class="math t" aria-hidden="true"><i>t</i> ≈</span><span class="num">65</span><span class="unit">ms</span></p>
         <h3>The tray opens in about 65&nbsp;ms.</h3>
       </article>
 
@@ -148,6 +148,7 @@ const states = [
     font-variant-numeric: tabular-nums;
   }
   .unit { color: var(--ink-3); font-size: 1.25rem; font-weight: 600; }
+  .t { margin-right: 6px; color: var(--ink-3); font-size: 2rem; }
 
   .tray {
     position: relative;

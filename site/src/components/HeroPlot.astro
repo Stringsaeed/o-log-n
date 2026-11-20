@@ -1,0 +1,63 @@
+---
+// Graph paper and the curve y = log n behind the hero. A nod to the name;
+// it plots nothing about the app, so its only labels are n and log n.
+import { logCurve } from '../lib/curve';
+const W = 1000;
+const H = 400;
+---
+<div class="plot" aria-hidden="true">
+  <div class="paper"></div>
+  <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" focusable="false">
+    <path class="axis" d={`M0 0V${H}H${W}`} vector-effect="non-scaling-stroke" />
+    <path class="curve" d={logCurve(W, H)} vector-effect="non-scaling-stroke" pathLength="1" />
+  </svg>
+  <span class="lab y math">log <i>n</i></span>
+  <span class="lab x math"><i>n</i></span>
+  <span class="lab o math">1</span>
+</div>
+
+<style>
+  .plot {
+    position: absolute;
+    inset: 8px 0 -12px;
+    z-index: -1;
+    pointer-events: none;
+  }
+  .paper {
+    position: absolute;
+    inset: -40px -60px -20px;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 40px 40px;
+    -webkit-mask-image: radial-gradient(70% 78% at 50% 46%, #000 20%, transparent 100%);
+    mask-image: radial-gradient(70% 78% at 50% 46%, #000 20%, transparent 100%);
+    opacity: 0.8;
+  }
+  svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .axis { fill: none; stroke: var(--line-2); stroke-width: 1; }
+  .curve {
+    fill: none;
+    stroke: var(--cobalt-ink);
+    stroke-width: 1.75;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.5;
+  }
+  .lab { position: absolute; color: var(--ink-3); font-size: 1.0625rem; }
+  .lab.y { right: 0; top: 8px; color: var(--cobalt-ink); }
+  .lab.x { right: 0; bottom: 6px; }
+  .lab.o { left: 6px; bottom: 6px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .curve { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.6s cubic-bezier(0.3, 0.6, 0.2, 1) 0.15s forwards; }
+  }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  @media (max-width: 640px) {
+    .plot { inset: 8px 0 -30px; }
+    .curve { opacity: 0.28; }
+    .lab { font-size: 0.9375rem; }
+    .lab.o { display: none; }
+    .lab.x { bottom: 4px; }
+  }
+</style>

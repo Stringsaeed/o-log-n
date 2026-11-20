@@ -133,6 +133,21 @@ b, strong { font-weight: 600; }
   letter-spacing: -0.01em;
 }
 
+/* Notation. Upright Computer Modern for digits, operators and "log";
+   <i> inside it is a variable and uses the maths italic. */
+.math {
+  font-family: var(--font-math);
+  font-size: 1.14em;
+  font-weight: 400;
+  font-style: normal;
+  font-stretch: normal;
+  letter-spacing: 0;
+  line-height: 1;
+  white-space: nowrap;
+  font-variant-numeric: lining-nums;
+}
+.math i { font-style: italic; padding-inline: 0.02em; }
+
 kbd {
   display: inline-grid;
   place-items: center;
@@ -158,8 +173,8 @@ kbd {
 
 .eyebrow {
   display: inline-flex;
-  align-items: center;
-  gap: 8px;
+  align-items: baseline;
+  gap: 10px;
   margin-bottom: 16px;
   color: var(--cobalt-ink);
   font-size: 0.8125rem;
@@ -167,6 +182,8 @@ kbd {
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
+/* Section numbers, as in a paper: §1, §2 … */
+.eyebrow .math { font-size: 1.35em; letter-spacing: 0; text-transform: none; color: var(--ink-2); }
 
 .h2 {
   font-size: clamp(2rem, 4.6vw, 3.25rem);

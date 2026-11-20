@@ -3,7 +3,8 @@
 // It is a simulation. Behaviour lives in src/scripts/demo.ts and every
 // figure it shows comes from src/data/results.ts.
 import Icon from './Icon.astro';
-import { KINDS, SAMPLE_ORDER, formatBytes, formatPct } from '../data/results';
+import { KINDS, SAMPLE_ORDER, formatBytes, formatLeft, formatPct } from '../data/results';
+import { logCurve } from '../lib/curve';
 
 const samples = SAMPLE_ORDER.map((id) => ({ id, ...KINDS[id] }));
 const first = samples[0];
@@ -11,8 +12,9 @@ const firstAfter = Math.round(first.bytes * (1 - first.smart!.pct / 100));
 ---
 <div class="stage" id="stage">
   <div class="wall" aria-hidden="true">
-    <svg class="wall-mark" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid meet">
-      <path d="M22 4Q58 50 22 96M78 4Q42 50 78 96" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+    <div class="wall-grid"></div>
+    <svg class="wall-curve" viewBox="0 0 1000 400" preserveAspectRatio="none" focusable="false">
+      <path d={logCurve(1000, 400)} fill="none" stroke="currentColor" stroke-width="1.5" vector-effect="non-scaling-stroke" />
     </svg>
   </div>
 
@@ -88,6 +90,7 @@ const firstAfter = Math.round(first.bytes * (1 - first.smart!.pct / 100));
           <div class="rc-bar rc-after"><i id="rc-after-bar"></i></div>
         </div>
         <p class="rc-sizes mono" id="rc-sizes">{formatBytes(first.bytes)} → {formatBytes(firstAfter)}</p>
+        <p class="rc-fn math" id="rc-fn" aria-hidden="true"><i>n</i> ↦ {formatLeft(first.smart!.pct)}<i>n</i></p>
         <p class="rc-method" id="rc-method">{first.smart!.how}</p>
         <p class="rc-note" id="rc-note"></p>
         <p class="rc-foot" id="rc-foot">Simulated here. The figure was measured on this sample in our 13-file test set.</p>
@@ -126,19 +129,28 @@ const firstAfter = Math.round(first.bytes * (1 - first.smart!.pct / 100));
     position: absolute;
     inset: 0;
     z-index: -1;
-    color: rgba(255, 255, 255, 0.07);
+    color: rgba(255, 255, 255, 0.16);
     background:
       radial-gradient(60% 70% at 14% 108%, rgba(52, 211, 153, 0.42), transparent 62%),
       radial-gradient(55% 60% at 96% -8%, rgba(129, 102, 255, 0.55), transparent 64%),
       radial-gradient(90% 90% at 50% 0%, #2350de 0%, #1a3fc0 38%, #0c1f73 72%, #070f3d 100%);
   }
-  .wall-mark {
+  .wall-grid {
     position: absolute;
-    left: 50%;
-    top: 50%;
-    width: min(92%, 880px);
-    height: 150%;
-    transform: translate(-50%, -50%);
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);
+    background-size: 40px 40px;
+    background-position: center top;
+    -webkit-mask-image: linear-gradient(#000, transparent 92%);
+    mask-image: linear-gradient(#000, transparent 92%);
+  }
+  .wall-curve {
+    position: absolute;
+    inset: 32px 0 0;
+    width: 100%;
+    height: calc(100% - 32px);
   }
 
   .menubar {
@@ -559,6 +571,9 @@ const firstAfter = Math.round(first.bytes * (1 - first.smart!.pct / 100));
   .rc-after i { background: linear-gradient(90deg, #5b8cff, #34d399); transform: scaleX(var(--left, 1)); }
   .result[data-kind='nodata'] .rc-bars { display: none; }
   .rc-sizes { margin-top: 12px; font-size: 0.9375rem; font-weight: 500; }
+  .rc-fn { margin-top: 10px; font-size: 1.25rem; color: #cfe0ff; }
+  .rc-fn:empty { display: none; }
+  .rc-fn :global(i) { font-style: italic; }
   .rc-method { margin-top: 12px; font-size: 0.9375rem; font-weight: 600; }
   .rc-note { margin-top: 6px; font-size: 0.875rem; color: var(--w-2); }
   .rc-note:empty { display: none; }

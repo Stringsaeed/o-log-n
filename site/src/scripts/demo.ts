@@ -3,7 +3,7 @@
  * file. For a visitor's own file it uses the name and size only.
  * Every figure comes from src/data/results.ts.
  */
-import { KINDS, EXT_TO_KIND, formatBytes as fmt, formatPct, type Mode } from '../data/results';
+import { KINDS, EXT_TO_KIND, formatBytes as fmt, formatLeft, formatPct, type Mode } from '../data/results';
 
 type OutcomeType = 'saved' | 'optimal' | 'nodata';
 
@@ -64,6 +64,7 @@ const el = {
   big: $('#rc-big'),
   bar: $('#rc-after-bar'),
   sizes: $('#rc-sizes'),
+  fn: $('#rc-fn'),
   how: $('#rc-method'),
   note: $('#rc-note'),
   foot: $('#rc-foot'),
@@ -166,6 +167,14 @@ function render(o: Outcome) {
   else if (o.type === 'optimal' && o.bytes != null) el.sizes.textContent = fmt(o.bytes) + ' → ' + fmt(o.bytes) + ' · 0 B saved';
   else if (o.type === 'saved') el.sizes.textContent = 'Folder sizes aren’t read in this demo.';
   else el.sizes.textContent = o.bytes != null ? fmt(o.bytes) : '';
+
+  // The same result as notation: n ↦ 0.23n, where n is the file's size.
+  el.fn.textContent = '';
+  if (o.type === 'saved') {
+    const n1 = document.createElement('i'); n1.textContent = 'n';
+    const n2 = document.createElement('i'); n2.textContent = 'n';
+    el.fn.append(n1, ' ↦ ' + (o.own ? '≈ ' : '') + formatLeft(o.pct!), n2);
+  }
 
   el.foot.textContent = '';
   if (o.own && o.type === 'saved' && o.bytes != null) {
