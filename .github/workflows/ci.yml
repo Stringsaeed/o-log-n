@@ -15,25 +15,26 @@ jobs:
     runs-on: xcode-27
     timeout-minutes: 40
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Build
         run: swift build -c release -Xswiftc -warnings-as-errors
 
+      # The runner image has no timeout(1); GitHub's step timeout bounds each step instead.
       - name: Test
         timeout-minutes: 20
-        run: timeout 20m swift test
+        run: swift test
 
       - name: Bundle
         run: scripts/bundle.sh
 
-      - name: Headless selftests
-        timeout-minutes: 10
-        run: |
-          # --selftest-keys and --selftest need an interactive GUI session, so they are
-          # not run here. --selftest-keys calls NSApp.activate and shows the tray.
-          # --selftest requires a display (NSScreen) and installs panels, the hotkey,
-          # and the drag monitor. A runner has no such session; either check exits
-          # early or hangs waiting on window-server state.
-          timeout 3m build/Logn.app/Contents/MacOS/OLogN --selftest-replace
-          timeout 3m build/Logn.app/Contents/MacOS/OLogN --selftest-history
+      # --selftest-keys and --selftest need an interactive GUI session, so they are not run
+      # here: --selftest-keys calls NSApp.activate and shows the tray, and --selftest needs a
+      # display (NSScreen) for the panels, the hotkey, and the drag monitor.
+      - name: Selftest (replace)
+        timeout-minutes: 3
+        run: build/Logn.app/Contents/MacOS/OLogN --selftest-replace
+
+      - name: Selftest (history)
+        timeout-minutes: 3
+        run: build/Logn.app/Contents/MacOS/OLogN --selftest-history
