@@ -1,0 +1,13 @@
+// Cloudflare Workers, static assets only: there is no Worker script.
+// `npm run build` writes the site to ./dist and `npx wrangler deploy` uploads it.
+// With this file present, Wrangler's automatic framework configuration does not
+// run, so it will not add the Astro Cloudflare adapter to a purely static site.
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  // Must match the Worker's name in the Cloudflare dashboard.
+  "name": "o-log-n",
+  "compatibility_date": "2026-11-21",
+  "assets": {
+    "directory": "./dist"
+  }
+}

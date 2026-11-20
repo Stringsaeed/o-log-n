@@ -16,14 +16,27 @@ Needs Node 22.23 or later. Astro's anonymous telemetry can be turned off with `A
 
 ## Deploy
 
-The output is `site/dist`, not `site`. Build first, then publish that folder:
+The site is hosted on Cloudflare Workers as static assets; `wrangler.jsonc` says so. The output is `site/dist`, not `site`.
+
+From the Cloudflare dashboard (Workers & Pages, import the repository), use:
+
+| Setting | Value |
+|---|---|
+| Project name | `o-log-n` (must match `name` in `wrangler.jsonc`) |
+| Build command | `npm run build` |
+| Deploy command | `npx wrangler deploy` |
+| Preview command | `npx wrangler preview` |
+| Advanced settings, Path (root directory) | `site` |
+| Advanced settings, build watch paths (optional) | include `site/*`, so app-only commits do not rebuild the site |
+
+Or by hand:
 
 ```sh
 cd site && npm run build
-npx wrangler pages deploy dist --project-name ologn
+npx wrangler deploy
 ```
 
-`public/_headers` carries the security and cache headers in the format Cloudflare Pages and Netlify read.
+`public/_headers` carries the security and cache headers; Workers static assets reads it from the output folder.
 
 ## Going live with downloads
 
