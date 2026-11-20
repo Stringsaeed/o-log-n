@@ -1,9 +1,30 @@
 name: CI
 
+# The macOS runner is the slow, costly part, so this workflow is skipped when a
+# change cannot affect the app: the website, the docs, the README images and
+# the root-level Markdown files. Anything else still runs it, including new
+# paths nobody has listed here, so the default is to test.
+#
+# Keep the two lists identical. `*.md` matches the repository root only (`*`
+# does not cross a `/`), so the licences under Vendor/, which the bundle
+# copies, still count as app changes.
+#
+# If this job is ever made a required status check, a skipped workflow would
+# leave pull requests waiting forever; gate the job with `if:` instead then.
 on:
   pull_request:
+    paths-ignore:
+      - 'site/**'
+      - 'docs/**'
+      - 'assets/**'
+      - '*.md'
   push:
     branches: [main]
+    paths-ignore:
+      - 'site/**'
+      - 'docs/**'
+      - 'assets/**'
+      - '*.md'
 
 concurrency:
   group: ci-${{ github.ref }}
