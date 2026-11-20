@@ -11,7 +11,18 @@ rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
 cp "$BIN_DIR/OLogNApp" "$APP/Contents/MacOS/OLogN"
 cp Support/Info.plist "$APP/Contents/Info.plist"
-if [ -f Support/AppIcon.icns ]; then cp Support/AppIcon.icns "$APP/Contents/Resources/"; fi
+# App icon. Support/AppIcon.icon is an Icon Composer document; actool compiles
+# it into Assets.car (the layered icon macOS 26 draws, with its dark, tinted
+# and clear modes) and an AppIcon.icns for anything that still reads one.
+# Without Xcode there is no actool, so fall back to the committed .icns.
+if ACTOOL="$(xcrun --find actool 2>/dev/null)" && [ -d Support/AppIcon.icon ]; then
+  "$ACTOOL" Support/AppIcon.icon --compile "$APP/Contents/Resources" \
+    --app-icon AppIcon --platform macosx --minimum-deployment-target 26.0 \
+    --output-partial-info-plist "$(mktemp -t logn-icon-plist)" >/dev/null
+  [ -f "$APP/Contents/Resources/Assets.car" ] || { echo "actool did not produce Assets.car" >&2; exit 1; }
+elif [ -f Support/AppIcon.icns ]; then
+  cp Support/AppIcon.icns "$APP/Contents/Resources/"
+fi
 # Copy SwiftPM resource bundles, if any.
 find "$BIN_DIR" -maxdepth 1 -name '*.bundle' -exec cp -R {} "$APP/Contents/Resources/" \;
 mkdir -p "$APP/Contents/Resources/Licenses"
