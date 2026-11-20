@@ -114,6 +114,7 @@
       </div>
       <p class="sim-badge"><span class="sim-dot" aria-hidden="true"></span>Simulation. Nothing is uploaded, read or compressed.</p>
 
+      <noscript><p class="noscript">The demo needs JavaScript. Everything it would show is in the results table below.</p></noscript>
       <div class="cap-slot">
         <div class="capsule" id="capsule" data-state="idle" role="group" aria-label="Logn drop target (simulated)">
           <div class="halves">
@@ -142,15 +143,15 @@
         <div class="desk">
           <p class="desk-h" id="chips-h">Samples from our test set</p>
           <ul class="chips" aria-labelledby="chips-h">
-            <li><button type="button" class="chip" draggable="true" data-kind="png" aria-pressed="true"><i class="doc" data-ext="PNG"></i><span><b>Screenshot</b><small>1.47 MB</small></span></button></li>
-            <li><button type="button" class="chip" draggable="true" data-kind="jpeg" aria-pressed="false"><i class="doc" data-ext="JPG"></i><span><b>Photo</b><small>1.45 MB</small></span></button></li>
-            <li><button type="button" class="chip" draggable="true" data-kind="heic" aria-pressed="false"><i class="doc" data-ext="HEIC"></i><span><b>Photo</b><small>1.43 MB</small></span></button></li>
-            <li><button type="button" class="chip" draggable="true" data-kind="pdf" aria-pressed="false"><i class="doc" data-ext="PDF"></i><span><b>Report with images</b><small>8.65 MB</small></span></button></li>
-            <li><button type="button" class="chip" draggable="true" data-kind="video" aria-pressed="false"><i class="doc" data-ext="MP4"></i><span><b>1080p clip</b><small>33.0 MB</small></span></button></li>
-            <li><button type="button" class="chip" draggable="true" data-kind="wav" aria-pressed="false"><i class="doc" data-ext="WAV"></i><span><b>Stereo take</b><small>5.76 MB</small></span></button></li>
-            <li><button type="button" class="chip" draggable="true" data-kind="json" aria-pressed="false"><i class="doc" data-ext="JSON"></i><span><b>Server log</b><small>12.5 MB</small></span></button></li>
-            <li><button type="button" class="chip" draggable="true" data-kind="folder" aria-pressed="false"><i class="doc doc-folder" data-ext=""></i><span><b>Source folder</b><small>8.00 MB</small></span></button></li>
-            <li><button type="button" class="chip" draggable="true" data-kind="zip" aria-pressed="false"><i class="doc" data-ext="ZIP"></i><span><b>Archive</b><small>881 KB</small></span></button></li>
+            <li><div role="button" tabindex="0" class="chip" draggable="true" data-kind="png" aria-pressed="true"><i class="doc" data-ext="PNG"></i><span><b>Screenshot</b><small>1.47 MB</small></span></div></li>
+            <li><div role="button" tabindex="0" class="chip" draggable="true" data-kind="jpeg" aria-pressed="false"><i class="doc" data-ext="JPG"></i><span><b>Photo</b><small>1.45 MB</small></span></div></li>
+            <li><div role="button" tabindex="0" class="chip" draggable="true" data-kind="heic" aria-pressed="false"><i class="doc" data-ext="HEIC"></i><span><b>Photo</b><small>1.43 MB</small></span></div></li>
+            <li><div role="button" tabindex="0" class="chip" draggable="true" data-kind="pdf" aria-pressed="false"><i class="doc" data-ext="PDF"></i><span><b>Report with images</b><small>8.65 MB</small></span></div></li>
+            <li><div role="button" tabindex="0" class="chip" draggable="true" data-kind="video" aria-pressed="false"><i class="doc" data-ext="MP4"></i><span><b>1080p clip</b><small>33.0 MB</small></span></div></li>
+            <li><div role="button" tabindex="0" class="chip" draggable="true" data-kind="wav" aria-pressed="false"><i class="doc" data-ext="WAV"></i><span><b>Stereo take</b><small>5.76 MB</small></span></div></li>
+            <li><div role="button" tabindex="0" class="chip" draggable="true" data-kind="json" aria-pressed="false"><i class="doc" data-ext="JSON"></i><span><b>Server log</b><small>12.5 MB</small></span></div></li>
+            <li><div role="button" tabindex="0" class="chip" draggable="true" data-kind="folder" aria-pressed="false"><i class="doc doc-folder" data-ext=""></i><span><b>Source folder</b><small>8.00 MB</small></span></div></li>
+            <li><div role="button" tabindex="0" class="chip" draggable="true" data-kind="zip" aria-pressed="false"><i class="doc" data-ext="ZIP"></i><span><b>Archive</b><small>881 KB</small></span></div></li>
           </ul>
           <div class="desk-tools">
             <button type="button" class="tool" id="flip" aria-pressed="false"><kbd>⌥</kbd> Flip the halves</button>
@@ -207,13 +208,13 @@
           <td><span class="num">−1.7%</span><span class="bar" style="--left:.983"><i></i></span><span class="cell-note">−8% with the progressive option</span></td></tr>
         <tr><th scope="row">HEIC</th>
           <td><span class="num">−23%</span><span class="bar" style="--left:.77"><i></i></span></td>
-          <td><span class="num dash" aria-label="no measured figure">—</span></td></tr>
+          <td><span class="num dash"><span aria-hidden="true">—</span><span class="sr">No measured figure</span></span></td></tr>
         <tr><th scope="row">PDF with images</th>
           <td><span class="num">−93%</span><span class="bar" style="--left:.07"><i></i></span></td>
-          <td><span class="num dash" aria-label="no measured figure">—</span></td></tr>
+          <td><span class="num dash"><span aria-hidden="true">—</span><span class="sr">No measured figure</span></span></td></tr>
         <tr><th scope="row">1080p MP4 <small>hardware HEVC</small></th>
           <td><span class="num">−56%</span><span class="bar" style="--left:.44"><i></i></span></td>
-          <td><span class="num dash" aria-label="no measured figure">—</span></td></tr>
+          <td><span class="num dash"><span aria-hidden="true">—</span><span class="sr">No measured figure</span></span></td></tr>
         <tr><th scope="row">WAV</th>
           <td><span class="num">−87%</span><span class="bar" style="--left:.13"><i></i></span><span class="cell-note">to AAC</span></td>
           <td><span class="num">−50%</span><span class="bar" style="--left:.5"><i></i></span><span class="cell-note">to FLAC</span></td></tr>
@@ -243,9 +244,10 @@
       <li><picture><source srcset="/assets/drop-compressing-dark.avif" type="image/avif"><img src="/assets/drop-compressing-dark.webp" width="336" height="128" loading="lazy" decoding="async" alt="The capsule as a progress pill with a ring, a file name and a speed."></picture><p><b>Working</b> The halves merge into one progress pill.</p></li>
       <li><picture><source srcset="/assets/drop-done-dark.avif" type="image/avif"><img src="/assets/drop-done-dark.webp" width="336" height="128" loading="lazy" decoding="async" alt="The capsule as a done pill showing a saving and a file name."></picture><p><b>Done</b> The saving, then it gets out of your way.</p></li>
     </ol>
+    <p class="footnote">Real screenshots from the app&rsquo;s built-in demo mode. The file names and figures inside them are placeholders, not measurements.</p>
 
     <div class="tray-head">
-      <h3 class="h3"><span class="keys" aria-label="Control Option Space"><kbd>⌃</kbd><kbd>⌥</kbd><kbd class="k-space">Space</kbd></span> opens the tray.</h3>
+      <h3 class="h3"><span class="keys"><span class="sr">Control Option Space</span><span aria-hidden="true"><kbd>⌃</kbd><kbd>⌥</kbd><kbd class="k-space">Space</kbd></span></span> opens the tray.</h3>
       <p>A Liquid Glass tray across the bottom quarter of the screen, with the live queue, history and settings. It opens in about <b class="mono">65&nbsp;ms</b>.</p>
     </div>
     <figure class="shot">

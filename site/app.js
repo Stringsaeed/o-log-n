@@ -56,14 +56,14 @@
   /* ───────── demo data: the measured figures, and nothing else ───────── */
   var VERIFIED = "Every lossless result is verified against the original before it’s written.";
   var KINDS = {
-    png:    { label: "PNG", smart: { pct: 77, how: "Oklab palette quantiser" }, lossless: { pct: 35, how: "Logn’s own PNG optimiser, with libdeflate" } },
-    jpeg:   { label: "JPEG", smart: { pct: 24, how: "SSIM-targeted re-encode, saved as progressive" }, lossless: { pct: 1.7, how: "Huffman tables optimised. Pixel-identical.", note: "With the progressive option switched on, this sample saves 8%." } },
-    heic:   { label: "HEIC", smart: { pct: 23, how: "SSIM-targeted HEIC re-encode" } },
-    pdf:    { label: "PDF", smart: { pct: 93, how: "Quartz filter that downsamples the embedded images" } },
-    video:  { label: "video", smart: { pct: 56, how: "Hardware HEVC, through VideoToolbox", ownNote: "Assumes a high-bitrate source like our sample. Already-compressed video comes back as “Already optimal”." } },
-    wav:    { label: "WAV", smart: { pct: 87, how: "Encoded to AAC" }, lossless: { pct: 50, how: "Encoded to FLAC" } },
-    json:   { label: "JSON", smart: { pct: 95, how: "Packed as .xz" }, lossless: { pct: 95, how: "Packed as .xz" } },
-    folder: { label: "folder", smart: { pct: 87, how: "Packed as .tar.xz" }, lossless: { pct: 87, how: "Packed as .tar.xz" } },
+    png:    { label: "PNG", sample: "PNG screenshot", smart: { pct: 77, how: "Oklab palette quantiser" }, lossless: { pct: 35, how: "Logn’s own PNG optimiser, with libdeflate" } },
+    jpeg:   { label: "JPEG", sample: "JPEG photo", smart: { pct: 24, how: "SSIM-targeted re-encode, saved as progressive" }, lossless: { pct: 1.7, how: "Huffman tables optimised. Pixel-identical.", note: "With the progressive option switched on, this sample saves 8%." } },
+    heic:   { label: "HEIC", sample: "HEIC photo", smart: { pct: 23, how: "SSIM-targeted HEIC re-encode" } },
+    pdf:    { label: "PDF", sample: "PDF-with-images", smart: { pct: 93, how: "Quartz filter that downsamples the embedded images" } },
+    video:  { label: "video", sample: "1080p MP4", smart: { pct: 56, how: "Hardware HEVC, through VideoToolbox", ownNote: "Assumes a high-bitrate source like our sample. Already-compressed video comes back as “Already optimal”." } },
+    wav:    { label: "WAV", sample: "WAV", smart: { pct: 87, how: "Encoded to AAC" }, lossless: { pct: 50, how: "Encoded to FLAC" } },
+    json:   { label: "JSON", sample: "JSON log", smart: { pct: 95, how: "Packed as .xz" }, lossless: { pct: 95, how: "Packed as .xz" } },
+    folder: { label: "folder", sample: "source-code folder", smart: { pct: 87, how: "Packed as .tar.xz" }, lossless: { pct: 87, how: "Packed as .tar.xz" } },
     zip:    { label: "zip", optimal: true }
   };
   var SAMPLES = {
@@ -99,7 +99,9 @@
   function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
   function clearTimers() { timers.forEach(clearTimeout); timers = []; cancelAnimationFrame(raf); }
   function setState(s) { capsule.setAttribute("data-state", s); }
-  function clearTarget() { halves().forEach(function (h) { h.classList.remove("is-target"); }); }
+  var SUB = { smart: ["Smallest", "Drop to shrink"], lossless: ["Exact quality", "Drop exact"] };
+  function sub(h, on) { $("small", h).textContent = SUB[h.getAttribute("data-mode")][on ? 1 : 0]; }
+  function clearTarget() { halves().forEach(function (h) { h.classList.remove("is-target"); sub(h, false); }); }
   function inView() { var r = slot.getBoundingClientRect(); return r.top > -10 && r.bottom < window.innerHeight + 10; }
   function unfloat() { capsule.classList.remove("floating"); }
   function setPillsHidden(busy, done) {
@@ -140,7 +142,7 @@
     if (!k) {
       o.type = "nodata"; o.big = "No figure";
       o.how = "There’s no measured figure for " + (item.ext ? "." + item.ext + " files" : "this kind of file") + ".";
-      o.note = "Logn packs anything it has no codec for as .xz. On our samples, a 12 MB JSON log shrank 95% and a source-code folder 87%. Yours will differ.";
+      o.note = "So no estimate here. For scale, on our samples a 12 MB JSON log shrank 95% and a source-code folder 87%.";
       return o;
     }
     if (k.optimal) {
@@ -156,7 +158,7 @@
       o.note = "Lossless only keeps a result that is verified identical and smaller. Otherwise Logn says “Already optimal”. Try Smart for this one.";
       return o;
     }
-    o.type = "saved"; o.pct = m.pct; o.big = pctText(m.pct); o.how = m.how;
+    o.type = "saved"; o.sample = k.sample; o.pct = m.pct; o.big = pctText(m.pct); o.how = m.how;
     o.note = (item.own && m.ownNote) || m.note || (mode === "lossless" ? VERIFIED : "");
     if (item.bytes != null) { o.after = Math.round(item.bytes * (1 - m.pct / 100)); o.saved = item.bytes - o.after; }
     return o;
@@ -177,7 +179,7 @@
     if (o.own && o.type === "saved" && o.bytes != null) {
       var b = document.createElement("b"); b.textContent = "Estimate. ";
       el.foot.appendChild(b);
-      el.foot.appendChild(document.createTextNode("Your file’s size, times the figure measured on our sample. Real results depend on the file. It wasn’t read, uploaded or compressed."));
+      el.foot.appendChild(document.createTextNode("Your file’s size, times the figure measured on our " + o.sample + " sample. Real results depend on the file. It wasn’t read, uploaded or compressed."));
     } else if (o.own) {
       el.foot.textContent = "Simulated here. Your file wasn’t read, uploaded or compressed.";
     } else {
@@ -198,6 +200,7 @@
   function run(mode) {
     if (running) return;
     var item = current, o = outcome(item, mode);
+    var hadFocus = capsule.contains(document.activeElement);
     clearTimers(); running = true; clearTarget();
     el.busyName.textContent = item.name;
     var modeName = o.mode, dur = reduced ? 200 : o.type === "optimal" ? 280 : o.type === "nodata" ? 350 : 1150;
@@ -218,6 +221,7 @@
       result.setAttribute("data-state", "shown");
       el.card.setAttribute("aria-hidden", "false");
       running = false;
+      if (hadFocus) el.donePill.focus({ preventScroll: true });
       later(function dwell() {
         if (capsule.matches(":hover") || capsule.contains(document.activeElement)) return later(dwell, 1500);
         toIdle();
@@ -230,6 +234,9 @@
     chip.addEventListener("click", function () {
       var kind = chip.getAttribute("data-kind");
       pick({ kind: kind, name: SAMPLES[kind].name, bytes: SAMPLES[kind].bytes, own: false });
+    });
+    chip.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); chip.click(); }
     });
     chip.addEventListener("dragstart", function (e) {
       chip.click();
@@ -248,6 +255,7 @@
   el.donePill.addEventListener("click", function () {
     var wasFloating = capsule.classList.contains("floating");
     toIdle();
+    if (!wasFloating) halves()[0].focus({ preventScroll: true });
     if (wasFloating) result.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
   });
   flipBtn.addEventListener("click", function () {
@@ -307,6 +315,10 @@
     if (!e.target.closest || !e.target.closest(".half")) { if (!running) toIdle(); }
   });
 
+  function inside(e) {
+    var r = capsule.getBoundingClientRect();
+    return e.clientX > r.left && e.clientX < r.right && e.clientY > r.top && e.clientY < r.bottom;
+  }
   function aimed(half, e) {
     // Holding ⌥ flips which half is targeted, without moving the pointer.
     if (!e.altKey) return half;
@@ -319,10 +331,10 @@
     e.preventDefault();
     e.dataTransfer.dropEffect = "copy";
     var t = aimed(half, e);
-    if (!t.classList.contains("is-target")) { clearTarget(); t.classList.add("is-target"); setState("target"); }
+    if (!t.classList.contains("is-target")) { clearTarget(); t.classList.add("is-target"); sub(t, true); setState("target"); }
   });
   capsule.addEventListener("dragleave", function (e) {
-    if (capsule.contains(e.relatedTarget)) return;
+    if (e.relatedTarget ? capsule.contains(e.relatedTarget) : inside(e)) return;
     clearTarget();
     if (!running && capsule.getAttribute("data-state") === "target") setState("armed");
   });
