@@ -108,6 +108,9 @@ const firstAfter = Math.round(first.bytes * (1 - first.smart!.pct / 100));
     border-radius: var(--r-xl);
     padding: 0 clamp(14px, 3vw, 36px) clamp(14px, 2.4vw, 28px);
   }
+  /* While the capsule floats at the top of the viewport, lift the whole figure
+     above the rest of the page, or a card further down would cover it. */
+  :global(html.capsule-floating) .stage { z-index: 140; }
   .stage::before, .stage::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
   .stage::before {
     z-index: -1;

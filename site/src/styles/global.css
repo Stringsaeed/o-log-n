@@ -201,6 +201,8 @@ kbd {
 }
 .engraved::after {
   content: attr(data-t);
+  /* Empty alt text, so a screen reader reads the figure once. */
+  content: attr(data-t) / '';
   position: absolute;
   inset: 0;
   -webkit-text-fill-color: var(--ink);
@@ -336,16 +338,11 @@ a.btn:active::after, button.btn:active:not(:disabled)::after { transform: none; 
 .btn-primary { color: var(--paper); }
 .btn-primary::before { background-color: var(--ink); }
 .btn-ghost { color: var(--ink); }
-/* "Coming soon": not a link. Dashed outline, stippled, no shadow to press. */
+/* "Coming soon": not a link. Dashed outline, nothing to press. */
 .btn-soon { color: var(--ink-2); cursor: default; }
-.btn-soon::before { border-style: dashed; background-color: transparent; }
-.btn-soon::after {
-  transform: none;
-  background-color: var(--ink-3);
-  -webkit-mask-image: var(--stipple);
-  mask-image: var(--stipple);
-  opacity: 0.55;
-}
+.btn-soon::before { border-style: dashed; }
+/* No shadow: there is nothing to press yet. */
+.btn-soon::after { content: none; }
 
 /* Reveal on scroll. Only applied once JS has marked the document, so the
    page is fully visible without JavaScript. */
