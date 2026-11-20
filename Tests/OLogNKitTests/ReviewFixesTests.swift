@@ -577,6 +577,8 @@ private func reviewEventOrder(_ stream: AsyncStream<EngineEvent>, expected: Int)
     return (bad, !zeros.intersection(grew).isEmpty)
 }
 
+/// Wall-clock check: process-wide CPU load from other tests running in parallel counts against
+/// the 500 ms budget, so CI runs this test in isolation (see .github/workflows/ci.yml).
 @Test func losslessJPEGBatchLeavesTheHeartbeatResponsive() async throws {
     let root = try reviewDirectory()
     defer { try? FileManager.default.removeItem(at: root) }

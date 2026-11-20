@@ -23,7 +23,14 @@ jobs:
       # The runner image has no timeout(1); GitHub's step timeout bounds each step instead.
       - name: Test
         timeout-minutes: 20
-        run: swift test
+        run: swift test --skip losslessJPEGBatchLeavesTheHeartbeatResponsive
+
+      # A wall-clock check (an instant skip must finish within 500 ms behind a JPEG batch).
+      # On a ~3-core runner the other tests' parallel fixture work dominates that clock,
+      # so it runs on its own, with the same threshold.
+      - name: Test (responsiveness, isolated)
+        timeout-minutes: 10
+        run: swift test --filter losslessJPEGBatchLeavesTheHeartbeatResponsive
 
       - name: Bundle
         run: scripts/bundle.sh
