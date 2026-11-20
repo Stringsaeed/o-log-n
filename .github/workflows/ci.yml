@@ -1,16 +1,66 @@
 name: CI
 
+# `macos` is a required status check on main, so this workflow has to report on
+# every pull request: a workflow skipped by a path filter never reports, and
+# the pull request would wait forever. So it always starts, a small job works
+# out whether the change can affect the app, and the macOS job is skipped when
+# it cannot. A skipped job reports as passed.
 on:
   pull_request:
   push:
     branches: [main]
+  # Pull requests opened by GitHub Actions (the release-please one) do not
+  # trigger workflows. release.yml starts this by hand on that branch instead.
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  # Decides whether the macOS job is needed. The website, the docs, the README
+  # images, root-level Markdown and release-please's own files cannot affect
+  # the app. Any other path can, including one nobody has listed here.
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      app: ${{ steps.diff.outputs.app }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - id: diff
+        env:
+          EVENT: ${{ github.event_name }}
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+          PR_HEAD: ${{ github.event.pull_request.head.sha }}
+          BEFORE: ${{ github.event.before }}
+          SHA: ${{ github.sha }}
+        run: |
+          # When in doubt, test: any failure to read the change counts as an app change.
+          yes() { echo "app=true" >> "$GITHUB_OUTPUT"; echo "macOS job: needed ($1)"; exit 0; }
+          case "$EVENT" in
+            pull_request) range="$PR_BASE...$PR_HEAD" ;;
+            push)         range="$BEFORE..$SHA" ;;
+            *)            range="origin/main...$SHA" ;;
+          esac
+          files="$(git diff --name-only "$range")" || yes "could not read $range"
+          [ -n "$files" ] || yes "no changed files in $range"
+          echo "$files"
+          # `[^/]+\.md` is Markdown at the repository root only. The licences under
+          # Vendor/, which the bundle copies, still count as app changes.
+          app="$(echo "$files" | grep -Ev '^(site/|docs/|assets/|[^/]+\.md$|version\.txt$|\.release-please-manifest\.json$)' || true)"
+          [ -z "$app" ] || yes "$(echo "$app" | head -1)"
+          echo "app=false" >> "$GITHUB_OUTPUT"
+          echo "macOS job: not needed"
+
   macos:
+    needs: changes
+    # Runs when the app changed, and also when `changes` itself failed, so a
+    # broken check can never wave a change through.
+    if: ${{ !cancelled() && (needs.changes.result != 'success' || needs.changes.outputs.app == 'true') }}
     # Keep this on the same image as the release build in build-macos.yml.
     runs-on: xcode-27
     timeout-minutes: 40
