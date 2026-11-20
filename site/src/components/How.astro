@@ -1,0 +1,91 @@
+---
+import Icon from './Icon.astro';
+import { REQUIREMENTS } from '../config';
+import { KINDS, formatLeft } from '../data/results';
+
+const groups = [
+  { title: 'Native Apple frameworks', tags: [['ImageIO'], ['VideoToolbox'], ['AudioToolbox'], ['PDFKit / Quartz'], ['Compression']] },
+  { title: 'Two vendored open-source libraries', tags: [['libdeflate', 'MIT'], ['libjpeg-turbo', 'BSD / IJG']] },
+  { title: 'Logn’s own', tags: [['PNG optimiser'], ['Oklab colour quantiser']] },
+];
+const facts = [
+  { icon: 'chip', k: 'Where it runs', v: 'On your Mac. Everything happens on device.' },
+  { icon: 'offline', k: 'Network', v: 'None.' },
+  { icon: 'user-off', k: 'Account', v: 'None.' },
+  { icon: 'layers', k: 'Requires', v: REQUIREMENTS.replace(' · ', ', on ') + '.' },
+];
+---
+<section class="sec sec-alt how" id="how" aria-labelledby="how-h">
+  <div class="wrap grid">
+    <div data-reveal>
+      <p class="eyebrow"><span class="math">§4</span>Under the hood</p>
+      <h2 id="how-h" class="h2">Mostly <span class="pinch">your Mac itself.</span></h2>
+      <div class="groups">
+        {groups.map((g) => (
+          <div>
+            <h3>{g.title}</h3>
+            <ul class="tags">
+              {g.tags.map(([name, lic]) => <li>{name}{lic && <small>{lic}</small>}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <div class="card facts" data-reveal>
+      <dl>
+        {facts.map((f) => (
+          <div>
+            <dt><span class="ico"><Icon name={f.icon} size={18} /></span>{f.k}</dt>
+            <dd>{f.v}</dd>
+          </div>
+        ))}
+      </dl>
+      <p class="name">
+        <b>On the name.</b> The repo is called <span class="mono">o-log-n</span>, as in <span class="math">O(log <i>n</i>)</span>: big input, small result.
+        A figure of speech, not a bound: <span class="math">{formatLeft(KINDS.png.smart!.pct)}<i>n</i></span> is still <span class="math">O(<i>n</i>)</span>.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: center; }
+  @media (max-width: 900px) { .grid { grid-template-columns: minmax(0, 1fr); } }
+  .groups { display: grid; gap: 24px; margin-top: 36px; }
+  h3 { color: var(--ink-2); font-size: 0.875rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+  .tags { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+  .tags li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: var(--stroke) solid var(--ink);
+    background: var(--paper);
+    font-size: 1.0625rem;
+  }
+  .tags small { color: var(--ink-3); font-family: var(--font-mono); font-size: 0.8125rem; }
+  .facts { padding: clamp(8px, 1.4vw, 14px) clamp(20px, 2.6vw, 28px) clamp(20px, 2.6vw, 28px); }
+  dl > div {
+    position: relative;
+    padding: 16px 0 16px 50px;
+    border-bottom: var(--stroke) dashed var(--rule-2);
+  }
+  .ico {
+    position: absolute;
+    left: 0;
+    top: 18px;
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: var(--stroke) solid var(--ink);
+    color: var(--ink);
+  }
+  dt { color: var(--ink-3); font-size: 0.875rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+  dd { font-size: 1.125rem; }
+  .name { margin-top: 18px; color: var(--ink-2); font-size: 1.0625rem; line-height: 1.45; }
+  .name .mono, .name .math, .name b { color: var(--ink); }
+</style>

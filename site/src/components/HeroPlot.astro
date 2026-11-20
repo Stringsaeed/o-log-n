@@ -1,0 +1,70 @@
+---
+// Graph paper and the curve y = log n behind the title, shaded the way a
+// textbook figure is: hatching hung under the curve, cross-hatched where it
+// is darkest. A nod to the name; it plots nothing about the app, so its only
+// labels are n and log n.
+import { logCurve, logBand } from '../lib/curve';
+const W = 1000;
+const H = 400;
+---
+<div class="plot" aria-hidden="true">
+  <div class="paper"></div>
+  <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" focusable="false">
+    <g class="shade">
+      <path d={logBand(W, H, 38)} fill="url(#p-h1)" />
+      <path d={logBand(W, H, 15, 128, 120, 31)} fill="url(#p-h2b)" />
+    </g>
+    <path class="axis" d={`M0 0V${H}H${W}`} vector-effect="non-scaling-stroke" />
+    <path class="curve" d={logCurve(W, H)} vector-effect="non-scaling-stroke" />
+  </svg>
+  <span class="lab y math">log <i>n</i></span>
+  <span class="lab x math"><i>n</i></span>
+  <span class="lab o math">1</span>
+</div>
+
+<style>
+  .plot {
+    position: absolute;
+    inset: 8px 0 -12px;
+    z-index: -1;
+    pointer-events: none;
+  }
+  /* Graph paper, in the blue of a printed grid. */
+  .paper {
+    position: absolute;
+    inset: -40px -60px -20px;
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 24px 24px;
+    -webkit-mask-image: radial-gradient(72% 80% at 50% 46%, #000 30%, transparent 100%);
+    mask-image: radial-gradient(72% 80% at 50% 46%, #000 30%, transparent 100%);
+  }
+  svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .shade { opacity: 0.5; }
+  .axis { fill: none; stroke: var(--ink); stroke-width: 1.25; }
+  .curve { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .lab { position: absolute; color: var(--ink-2); font-size: 1.1875rem; }
+  .lab.y { right: 0; top: -30px; color: var(--ink); }
+  .lab.x { right: 0; bottom: 6px; }
+  .lab.o { left: 8px; bottom: 6px; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    /* Drawn left to right by uncovering it. (A dash animation would be measured
+       before the SVG is stretched, and stop short.) */
+    .curve { animation: draw 1.6s cubic-bezier(0.3, 0.6, 0.2, 1) 0.15s backwards; }
+    .shade { animation: ink 0.9s ease-out 1.1s backwards; }
+  }
+  @keyframes draw { from { clip-path: inset(-12px 100% -12px -12px); } to { clip-path: inset(-12px -12px -12px -12px); } }
+  @keyframes ink { from { opacity: 0; } }
+  @media (max-width: 760px) {
+    .plot { inset: 8px 0 -30px; }
+    /* Under a narrow title the shading would sit behind the text. */
+    .shade { display: none; }
+    .curve { opacity: 0.45; }
+    .lab { font-size: 1rem; }
+    .lab.y { top: 2px; }
+    .lab.o { display: none; }
+    .lab.x { bottom: 4px; }
+  }
+</style>

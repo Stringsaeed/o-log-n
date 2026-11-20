@@ -1,0 +1,21 @@
+---
+import AppIcon from './AppIcon.astro';
+---
+<footer class="foot">
+  <div class="wrap in">
+    <a class="brand" href="/" aria-label="Logn, home"><AppIcon size={24} /><span>Logn</span></a>
+    <p>This site has no trackers, no analytics and no cookies, and it loads nothing from other domains.</p>
+    <p class="o"><span class="math">O(log <i>n</i>)</span><span class="qed" aria-hidden="true"></span></p>
+  </div>
+</footer>
+
+<style>
+  .foot { margin-top: 12px; padding-block: 26px 44px; border-top: var(--stroke) solid var(--ink); color: var(--ink-3); font-size: 1rem; }
+  .in { display: flex; align-items: center; gap: 12px 24px; flex-wrap: wrap; }
+  .brand { display: flex; align-items: center; gap: 8px; color: var(--ink); font-weight: 700; font-size: 1.125rem; text-decoration: none; }
+  .brand :global(img) { width: 24px; height: 24px; }
+  p { flex: 1; min-width: min(100%, 32ch); }
+  .o { flex: none; min-width: 0; display: flex; align-items: center; gap: 12px; color: var(--ink-2); font-size: 1.1875rem; }
+  /* The tombstone that ends a proof. */
+  .qed { width: 0.6em; height: 0.6em; background: var(--ink); }
+</style>

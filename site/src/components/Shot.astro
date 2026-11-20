@@ -1,0 +1,59 @@
+---
+// A wide screenshot of the tray. AVIF with a WebP fallback, generated from
+// the PNG master at build time. On small screens it scrolls sideways so the
+// text stays readable.
+import { getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  label: string;
+}
+const { src, alt, label } = Astro.props;
+const widths = [1000, 1600, src.width];
+const sizes = '(min-width: 1168px) 1016px, (min-width: 1040px) calc(100vw - 152px), 980px';
+const [avif, webp] = await Promise.all([
+  getImage({ src, widths, format: 'avif', quality: 58 }),
+  getImage({ src, widths, format: 'webp', quality: 80 }),
+]);
+---
+<div class="scroller" tabindex="0" role="group" aria-label={label}>
+  <picture>
+    <source type="image/avif" srcset={avif.srcSet.attribute} sizes={sizes} />
+    <img src={webp.src} srcset={webp.srcSet.attribute} sizes={sizes} width={src.width} height={src.height} alt={alt} loading="lazy" decoding="async" />
+  </picture>
+</div>
+
+<style>
+  /* A plate: the screenshot untouched, in an ink frame, on a hatched shadow.
+     The scroller leaves room for the shadow so it is never clipped. */
+  .scroller {
+    overflow-x: auto;
+    padding: 0 12px 13px 0;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ink-3) transparent;
+  }
+  .scroller:focus-visible { outline-offset: 2px; border-radius: 12px; }
+  picture { position: relative; isolation: isolate; display: block; min-width: 980px; }
+  picture::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 2.2% / 10.1%;
+    background-color: var(--ink);
+    -webkit-mask-image: var(--cross-3);
+    mask-image: var(--cross-3);
+    transform: translate(9px, 10px);
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* Matches the tray's own corner radius, so no wallpaper shows at the corners. */
+    border-radius: 2.2% / 10.1%;
+    outline: 2px solid var(--ink);
+    outline-offset: -1px;
+  }
+</style>

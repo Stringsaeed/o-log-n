@@ -1,0 +1,46 @@
+---
+// The prose is the rule. The formula restates it: x is your file, y is what
+// Logn writes, D(·) is decoded content.
+const rules = [
+  { math: ['<i>x</i><span class="prime">′</span> = <i>x</i>'], title: 'The original is never overwritten.', text: 'Logn writes a new file. Yours stays exactly where it was, exactly as it was.' },
+  { math: ['|<i>y</i>| ≤ |<i>x</i>|'], title: 'The output is never larger.', text: 'If nothing can be saved, Logn says “Already optimal” instead of handing you a bigger file.' },
+  { math: ['<i>D</i>(<i>y</i>) = <i>D</i>(<i>x</i>)'], title: 'Lossless is checked.', text: 'Every lossless result is verified against the original before it’s written.' },
+  { math: ['undo ∘ replace = id'], title: 'Replace can be undone.', text: 'Replace original moves the original to the Trash, and ⌘Z undoes it.' },
+];
+---
+<section class="sec" id="safety" aria-labelledby="safety-h">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <p class="eyebrow"><span class="math">§3</span>Safety, as four invariants</p>
+      <h2 id="safety-h" class="h2">Squeezed. <span class="pinch">Nothing essential lost.</span></h2>
+      <p class="sub">Let <span class="math"><i>x</i></span> be your file, <span class="math"><i>y</i></span> what Logn writes, and <span class="math"><i>D</i></span> the decoded content.</p>
+    </div>
+    <ol class="rules">
+      {rules.map((r, i) => (
+        <li class="card" data-reveal>
+          <div class="head">
+            <span class="formula math" aria-hidden="true" set:html={r.math[0]} />
+            <span class="n mono" aria-hidden="true">0{i + 1}</span>
+          </div>
+          <h3>{r.title}</h3>
+          <p>{r.text}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .rules { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 22px 20px; }
+  @media (max-width: 1000px) { .rules { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (max-width: 520px) { .rules { grid-template-columns: minmax(0, 1fr); } }
+  .card { padding: 22px; }
+  .head { display: flex; align-items: baseline; justify-content: space-between; min-height: 2.4rem; margin-bottom: 26px; padding-bottom: 14px; border-bottom: var(--stroke) dashed var(--rule-2); }
+  .formula { color: var(--spot); font-size: 1.4375rem; }
+  .formula :global(i) { font-style: italic; }
+  /* The prime glyph is drawn full-size, to be raised: do what TeX does. */
+  .formula :global(.prime) { display: inline-block; font-size: 0.72em; transform: translateY(-0.42em); margin-left: 0.04em; }
+  .n { color: var(--ink-3); font-size: 0.9375rem; }
+  h3 { font-size: 1.25rem; font-weight: 700; line-height: 1.2; text-wrap: balance; }
+  .card p { margin-top: 8px; color: var(--ink-2); font-size: 1.0625rem; line-height: 1.4; }
+</style>

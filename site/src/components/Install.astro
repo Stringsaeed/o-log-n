@@ -1,0 +1,145 @@
+---
+import AppIcon from './AppIcon.astro';
+import DownloadButton from './DownloadButton.astro';
+import Icon from './Icon.astro';
+import { BREW_COMMAND, BREW_LIVE, downloadLive, REQUIREMENTS } from '../config';
+
+const lead = downloadLive && BREW_LIVE
+  ? 'Two ways in. Pick whichever you like.'
+  : downloadLive || BREW_LIVE
+    ? 'One route is live. The other is on its way.'
+    : 'Not out yet. The first notarized release is still on its way, so neither route below works today. This page will switch on when it does.';
+---
+<section class="sec" id="install" aria-labelledby="install-h">
+  <div class="wrap">
+    <div class="band" data-reveal>
+      <div class="wall" aria-hidden="true"></div>
+      <AppIcon size={72} class="icon" />
+      <h2 id="install-h" class="h2">Get Logn.</h2>
+      <p class="lead">{lead}</p>
+
+      <div class="routes">
+        <div class="route">
+          <div class="rt"><h3>Direct download</h3><span class:list={['badge', downloadLive && 'live']}>{downloadLive ? 'Available' : 'Coming soon'}</span></div>
+          <DownloadButton class="wide" />
+          <p>A DMG for {REQUIREMENTS.replace(' · ', ' on ')}.</p>
+        </div>
+        <div class="route">
+          <div class="rt"><h3>Homebrew</h3><span class:list={['badge', BREW_LIVE && 'live']}>{BREW_LIVE ? 'Live' : 'Not live yet'}</span></div>
+          <div class="code">
+            <code id="brew-cmd" class="mono">{BREW_COMMAND}</code>
+            <button type="button" class="copy" id="brew-copy" disabled={!BREW_LIVE}><Icon name="copy" size={15} /><span>Copy</span></button>
+          </div>
+          {!BREW_LIVE && <p>The tap isn’t published yet, so this command will fail for now.</p>}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* The one reversed block: paper-coloured line on solid ink, like a
+     scratchboard, with the hatching scraped out of the black. */
+  .band {
+    --on: var(--paper);
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: clamp(36px, 6vw, 72px) clamp(16px, 4vw, 56px) clamp(20px, 4vw, 56px);
+    border-radius: var(--r-xl);
+    color: var(--on);
+    text-align: center;
+  }
+  .band::before, .band::after, .wall { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
+  .band::before { z-index: -2; background-color: var(--ink); }
+  /* shadow */
+  .band::after {
+    z-index: -3;
+    background-color: var(--ink);
+    -webkit-mask-image: var(--cross-3);
+    mask-image: var(--cross-3);
+    transform: translate(10px, 11px);
+  }
+  /* scraped hatching, fading toward the middle so the text sits on solid black */
+  .wall {
+    z-index: -1;
+    background-color: var(--on);
+    opacity: 0.2;
+    -webkit-mask-image: var(--hatch-2), radial-gradient(60% 75% at 50% 45%, transparent 55%, #000 100%);
+    mask-image: var(--hatch-2), radial-gradient(60% 75% at 50% 45%, transparent 55%, #000 100%);
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+  }
+  .band :global(.icon) { width: 72px; height: 72px; margin-bottom: 18px; }
+  .band :global(.h2) { color: var(--on); }
+  .lead { max-width: 52ch; margin-top: 14px; font-size: 1.1875rem; text-wrap: pretty; }
+
+  .routes {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    width: 100%;
+    max-width: 860px;
+    margin-top: clamp(28px, 4vw, 44px);
+    text-align: left;
+  }
+  @media (max-width: 760px) { .routes { grid-template-columns: minmax(0, 1fr); } }
+  .route {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 20px;
+    border-radius: var(--r-lg);
+    border: var(--stroke) solid var(--on);
+    background: var(--ink);
+  }
+  .rt { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  h3 { font-size: 1.25rem; font-weight: 700; }
+  .badge {
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: var(--stroke) dashed var(--on);
+    font-size: 0.875rem;
+    font-style: italic;
+    line-height: 1.2;
+  }
+  .badge.live { border-style: solid; background: var(--on); color: var(--ink); font-style: normal; font-weight: 700; }
+  .route p { font-size: 1rem; line-height: 1.4; opacity: 0.86; }
+  .route :global(.wide) { width: 100%; }
+  /* Buttons inside the reversed block take its colours. */
+  .route :global(.btn) { color: var(--on); }
+  .route :global(.btn)::before { border-color: var(--on); background-color: var(--ink); }
+  .route :global(.btn)::after { background-color: var(--on); }
+  .route :global(.btn-primary) { color: var(--ink); }
+  .route :global(.btn-primary)::before { background-color: var(--on); }
+
+  .code {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 5px 5px 5px 14px;
+    border-radius: 10px;
+    border: var(--stroke) dashed var(--on);
+  }
+  code { flex: 1; min-width: 0; padding-block: 6px; overflow-wrap: anywhere; font-size: 0.9375rem; line-height: 1.35; }
+  .copy {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: var(--stroke) solid var(--on);
+    background: transparent;
+    color: var(--on);
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+  .copy:hover:not(:disabled) { background: var(--on); color: var(--ink); }
+  .copy:focus-visible { outline: 2px solid var(--on); }
+  .copy:disabled { border-style: dashed; opacity: 0.7; cursor: not-allowed; }
+</style>

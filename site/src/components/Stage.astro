@@ -1,0 +1,601 @@
+---
+// The demo: a stylised desktop with the Smart | Lossless capsule.
+// It is a simulation. Behaviour lives in src/scripts/demo.ts and every
+// figure it shows comes from src/data/results.ts.
+import Icon from './Icon.astro';
+import { KINDS, SAMPLE_ORDER, formatBytes, formatLeft, formatPct } from '../data/results';
+
+const samples = SAMPLE_ORDER.map((id) => ({ id, ...KINDS[id] }));
+const first = samples[0];
+const firstAfter = Math.round(first.bytes * (1 - first.smart!.pct / 100));
+---
+<div class="stage" id="stage">
+  <div class="menubar" aria-hidden="true">
+    <span class="mb-l"><b>Desktop</b><span>File</span><span>Edit</span><span>View</span></span>
+    <span class="mb-r"><span class="mb-app"><Icon name="glyph" size={15} /></span><span class="mb-dots"><i></i><i></i><i></i></span></span>
+  </div>
+
+  <div class="cap-slot">
+    <div class="capsule" id="capsule" data-state="idle" role="group" aria-label="Logn drop target (simulated)">
+      <div class="halves">
+        <button type="button" class="half" data-side="l" data-mode="smart">
+          <span class="half-t"><Icon name="smart" size={17} /><b>Smart</b></span>
+          <small>Smallest</small>
+        </button>
+        <span class="seam" aria-hidden="true"></span>
+        <button type="button" class="half" data-side="r" data-mode="lossless">
+          <span class="half-t"><Icon name="lossless" size={17} /><b>Lossless</b></span>
+          <small>Exact quality</small>
+        </button>
+      </div>
+      <div class="cpill cpill-busy" aria-hidden="true">
+        <svg class="ring" viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="11" /><circle class="ring-v" cx="14" cy="14" r="11" pathLength="100" /></svg>
+        <span class="cpill-txt"><b id="busy-name">file</b><small id="busy-sub">Smart</small></span>
+      </div>
+      <button type="button" class="cpill cpill-done" id="done-pill" tabindex="-1" aria-hidden="true">
+        <svg class="done-ico" width="22" height="22" aria-hidden="true"><use id="done-use" href="#i-check" /></svg>
+        <span class="cpill-txt"><b id="done-big">−0%</b><small id="done-sub">Saved</small></span>
+      </button>
+    </div>
+  </div>
+  <p class="cap-hint">Drag a file onto a half. Or tap a file, then a half.</p>
+
+  <noscript><p class="noscript">The demo needs JavaScript. Everything it would show is in the results below.</p></noscript>
+
+  <div class="stage-body">
+    <div class="desk">
+      <p class="sr" id="chips-h">Sample files from our test set</p>
+      <ul class="files" aria-labelledby="chips-h">
+        {samples.map((s, i) => (
+          <li>
+            <div role="button" tabindex="0" class="chip" draggable="true" data-kind={s.id} aria-pressed={i === 0 ? 'true' : 'false'}>
+              <i class:list={['doc', s.id === 'folder' && 'doc-folder']} data-ext={s.ext} aria-hidden="true"></i>
+              <b>{s.short}{s.ext && <span class="sr">, {s.ext}</span>}</b>
+              <small class="mono">{formatBytes(s.bytes)}</small>
+            </div>
+          </li>
+        ))}
+        <li class="own-li">
+          <label class="chip own"><input type="file" id="own" class="sr" /><i class="plus" aria-hidden="true"></i><b>Your file</b><small>Estimate only</small></label>
+        </li>
+      </ul>
+      <div class="desk-tools">
+        <button type="button" class="tool" id="flip" aria-pressed="false"><kbd>⌥</kbd> Flip the halves</button>
+      </div>
+      <p class="desk-note">Your own file stays in this tab. Only its name and size are looked at, to show an estimate.</p>
+    </div>
+
+    <div class="result" id="result" data-state="empty">
+      <p class="sr" id="live" role="status" aria-live="polite"></p>
+      <div class="result-empty">
+        <span class="result-glyph" aria-hidden="true"><Icon name="arrow-down" size={18} /></span>
+        <p class="result-hint"><b>{first.file}</b> is picked. Now choose Smart or Lossless on the capsule.</p>
+      </div>
+      <p class="result-busy" aria-hidden="true">Compressing (pretend)…</p>
+      <div class="result-card" aria-hidden="true">
+        <div class="rc-top">
+          <span class="rc-file" id="rc-file">{first.file}</span>
+          <span class="rc-mode" id="rc-mode">Smart</span>
+        </div>
+        <p class="rc-big engraved" id="rc-big" data-t={formatPct(first.smart!.pct)}>{formatPct(first.smart!.pct)}</p>
+        <div class="rc-bars" aria-hidden="true">
+          <div class="rc-bar rc-before"><i></i></div>
+          <div class="rc-bar rc-after"><i id="rc-after-bar"></i></div>
+        </div>
+        <p class="rc-sizes mono" id="rc-sizes">{formatBytes(first.bytes)} → {formatBytes(firstAfter)}</p>
+        <p class="rc-fn math" id="rc-fn" aria-hidden="true"><i>n</i> ↦ {formatLeft(first.smart!.pct)}<i>n</i></p>
+        <p class="rc-method" id="rc-method">{first.smart!.how}</p>
+        <p class="rc-note" id="rc-note"></p>
+        <p class="rc-foot" id="rc-foot">Simulated here. The figure was measured on this sample in our 13-file test set.</p>
+      </div>
+    </div>
+  </div>
+
+  <p class="sim-badge"><span class="sim-dot" aria-hidden="true"></span><b>Simulation.</b> Nothing is uploaded, read or compressed.</p>
+</div>
+
+<script>
+  import '../scripts/demo.ts';
+</script>
+
+<style>
+  /* The stage is a figure drawn in ink: outline, paper, hatched tone.
+     Nothing here may put a transform, filter or clipping on .stage itself,
+     because the capsule inside it becomes position: fixed when summoned. */
+  .stage {
+    position: relative;
+    isolation: isolate;
+    border-radius: var(--r-xl);
+    padding: 0 clamp(14px, 3vw, 36px) clamp(14px, 2.4vw, 28px);
+  }
+  /* While the capsule floats at the top of the viewport, lift the whole figure
+     above the rest of the page, or a card further down would cover it. */
+  :global(html.capsule-floating) .stage { z-index: 140; }
+  .stage::before, .stage::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
+  .stage::before {
+    z-index: -1;
+    border: 2px solid var(--ink);
+    background-color: var(--paper);
+    background-image:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 24px 24px;
+    background-position: center 34px;
+  }
+  .stage::after {
+    z-index: -2;
+    background-color: var(--ink);
+    -webkit-mask-image: var(--cross-3);
+    mask-image: var(--cross-3);
+    transform: translate(10px, 11px);
+  }
+
+  .menubar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 36px;
+    /* Inset by the frame's 2px line, so the outline stays visible around it. */
+    margin: 0 calc(clamp(14px, 3vw, 36px) * -1 + 2px);
+    padding: 2px 16px 0;
+    border-bottom: var(--stroke) solid var(--ink);
+    border-radius: calc(var(--r-xl) - 2px) calc(var(--r-xl) - 2px) 0 0;
+    background-color: var(--paper);
+    transform: translateY(2px);
+    font-size: 0.9375rem;
+    color: var(--ink);
+  }
+  .mb-l, .mb-r { display: flex; align-items: center; gap: 16px; }
+  .mb-l b { font-weight: 700; }
+  .mb-l span { color: var(--ink-2); }
+  .mb-app {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 22px;
+    border-radius: 5px;
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .mb-dots { display: flex; gap: 5px; }
+  .mb-dots i { width: 14px; height: 5px; border-radius: 3px; border: 1px solid var(--ink); }
+  .mb-dots i:nth-child(2) { width: 5px; background: var(--ink); }
+  .mb-dots i:nth-child(3) { width: 30px; }
+  @media (max-width: 480px) { .mb-l span { display: none; } }
+
+  /* ── capsule ── */
+  .cap-slot {
+    height: 100px;
+    margin-top: 16px;
+    display: grid;
+    place-items: start center;
+  }
+  .capsule {
+    position: relative;
+    isolation: isolate;
+    width: 300px;
+    height: 76px;
+    border-radius: 40px;
+    color: var(--ink);
+    transition: width 0.34s var(--spring), height 0.34s var(--spring);
+  }
+  .capsule::before, .capsule::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
+  .capsule::before { z-index: -1; border: 2px solid var(--ink); background-color: var(--paper); }
+  .capsule::after {
+    z-index: -2;
+    background-color: var(--ink);
+    -webkit-mask-image: var(--cross-3);
+    mask-image: var(--cross-3);
+    transform: translate(5px, 6px);
+    transition: transform 0.3s var(--spring);
+  }
+  /* Armed: it lifts off the page, so its shadow falls further away. */
+  .capsule[data-state='armed'], .capsule[data-state='target'] { width: 336px; height: 88px; }
+  .capsule[data-state='armed']::after, .capsule[data-state='target']::after { transform: translate(9px, 11px); }
+  .capsule[data-state='busy'] { width: 256px; height: 60px; }
+  .capsule[data-state='done'], .capsule[data-state='optimal'], .capsule[data-state='nodata'] { width: 300px; height: 64px; }
+  @media (max-width: 400px) {
+    .capsule { width: 280px; }
+    .capsule[data-state='armed'], .capsule[data-state='target'] { width: 300px; height: 84px; }
+  }
+
+  .capsule.floating {
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    margin-left: -168px;
+    z-index: 150;
+    animation: summon 0.34s var(--spring) both;
+  }
+  .capsule.floating[data-state='busy'] { margin-left: -128px; }
+  .capsule.floating[data-state='done'], .capsule.floating[data-state='optimal'], .capsule.floating[data-state='nodata'] { margin-left: -150px; }
+  @keyframes summon {
+    from { transform: translateY(-140%); }
+    to { transform: none; }
+  }
+
+  .halves {
+    position: absolute;
+    inset: 6px;
+    display: flex;
+    transition: opacity 0.18s;
+  }
+  .half {
+    position: relative;
+    isolation: isolate;
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    border: var(--stroke) solid transparent;
+    border-radius: 34px;
+    background: transparent;
+    color: var(--ink);
+    transition: transform 0.22s var(--spring), opacity 0.18s, color 0.12s, background-color 0.12s;
+  }
+  .half > * { pointer-events: none; }
+  .half-t { display: flex; align-items: center; gap: 6px; font-size: 1.125rem; font-weight: 700; }
+  .half small { font-size: 0.875rem; color: var(--ink-2); }
+  /* Hover: an outline. Targeted: filled solid with ink, text reversed out. */
+  .half:hover { border-color: var(--ink); }
+  .half.is-target, .half:active { background: var(--ink); border-color: var(--ink); color: var(--paper); transform: scale(1.03); }
+  .half.is-target small, .half:active small { color: var(--paper); }
+  .half:focus-visible { outline: 2px solid var(--spot); outline-offset: 2px; border-radius: 34px; }
+  .capsule[data-state='target'] .half:not(.is-target) { opacity: 0.55; }
+  .seam { width: var(--stroke); margin: 14px 3px; background: var(--ink); }
+
+  .cpill {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    padding: 0 20px;
+    border: 0;
+    border-radius: inherit;
+    background: none;
+    color: var(--ink);
+    text-align: left;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.18s;
+  }
+  .cpill-txt { display: flex; flex-direction: column; min-width: 0; line-height: 1.15; }
+  .cpill-txt b { font-size: 1.0625rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cpill-txt small { font-size: 0.875rem; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .capsule:is([data-state='busy'], [data-state='done'], [data-state='optimal'], [data-state='nodata']) .halves { opacity: 0; visibility: hidden; }
+  .capsule[data-state='busy'] .cpill-busy,
+  .capsule:is([data-state='done'], [data-state='optimal'], [data-state='nodata']) .cpill-done { opacity: 1; visibility: visible; }
+  .ring { flex: none; width: 30px; height: 30px; transform: rotate(-90deg); }
+  .ring circle { fill: none; stroke: var(--rule-2); stroke-width: 2; }
+  .ring .ring-v { stroke: var(--ink); stroke-width: 3.6; stroke-dasharray: 100; stroke-dashoffset: calc(100 - var(--p, 0)); }
+  .done-ico { flex: none; color: var(--ink); }
+  .cpill-done:focus-visible { outline: 2px solid var(--spot); outline-offset: 2px; border-radius: 40px; }
+  .cpill-done b { font-size: 1.375rem; }
+  .capsule:is([data-state='optimal'], [data-state='nodata']) .cpill-done b { font-size: 1.125rem; }
+
+  .cap-hint { margin-top: 2px; text-align: center; font-size: 1rem; font-style: italic; color: var(--ink-2); }
+  .noscript {
+    margin: 12px auto 0;
+    max-width: 46ch;
+    padding: 10px 14px;
+    border: var(--stroke) dashed var(--ink);
+    border-radius: 10px;
+    text-align: center;
+    font-size: 1rem;
+  }
+
+  /* ── desk ── */
+  .stage-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 400px);
+    gap: clamp(20px, 4vw, 56px);
+    align-items: start;
+    margin-top: clamp(20px, 3vw, 32px);
+  }
+  @media (max-width: 860px) {
+    /* One column: the result sits right under the capsule, so a tap on a half
+       shows its answer without scrolling. */
+    .stage-body { grid-template-columns: minmax(0, 1fr); margin-top: 14px; }
+    .result { order: -1; }
+    .cap-hint { display: none; }
+  }
+
+  .files {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 6px;
+    max-width: 540px;
+  }
+  @media (max-width: 860px) { .files { max-width: none; } }
+  @media (max-width: 560px) {
+    .files { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .own-li { grid-column: 1 / -1; }
+    .chip.own { flex-direction: row; justify-content: center; gap: 10px; padding-block: 12px; }
+    .chip.own b { margin-top: 0; }
+    .chip.own .plus { width: 28px; height: 28px; }
+  }
+  .chip {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    padding: 10px 4px 8px;
+    border-radius: 10px;
+    border: var(--stroke) solid transparent;
+    text-align: center;
+    cursor: grab;
+    -webkit-user-select: none;
+    user-select: none;
+    touch-action: manipulation;
+    transition: transform 0.22s var(--spring);
+  }
+  .chip:hover { border-color: var(--rule-2); }
+  .chip:active { cursor: grabbing; transform: scale(0.95); }
+  .chip:focus-visible { outline: 2px solid var(--spot); outline-offset: 2px; border-radius: 10px; }
+  /* Picked: the sheet lifts, outlined, with its shadow hatched beneath it. */
+  .chip[aria-pressed='true'] { transform: translate(-2px, -3px); }
+  .chip[aria-pressed='true']::before, .chip[aria-pressed='true']::after {
+    content: '';
+    position: absolute;
+    inset: -1.5px;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+  .chip[aria-pressed='true']::before { z-index: -1; border: var(--stroke) solid var(--ink); background-color: var(--paper); }
+  .chip[aria-pressed='true']::after {
+    z-index: -2;
+    background-color: var(--ink);
+    -webkit-mask-image: var(--cross-3);
+    mask-image: var(--cross-3);
+    transform: translate(6px, 7px);
+  }
+  .chip.dragging { opacity: 0.45; }
+  .chip b { max-width: 100%; margin-top: 7px; font-size: 0.875rem; font-weight: 700; line-height: 1.15; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .chip small { font-size: 0.8125rem; color: var(--ink-2); }
+
+  /* A sheet of paper, drawn: outline, a folded corner, its tone hatched. */
+  .doc {
+    position: relative;
+    width: 40px;
+    height: 50px;
+    border: var(--stroke) solid var(--ink);
+    border-radius: 3px 13px 3px 3px;
+    background-color: var(--paper);
+  }
+  .doc::before {
+    content: '';
+    position: absolute;
+    top: -1.5px;
+    right: -1.5px;
+    width: 14px;
+    height: 14px;
+    border: var(--stroke) solid var(--ink);
+    border-radius: 0 13px 0 3px;
+    background-color: var(--ink);
+    -webkit-mask-image: linear-gradient(#000, #000), var(--hatch-3);
+    mask-image: linear-gradient(#000, #000), var(--hatch-3);
+    -webkit-mask-clip: border-box, padding-box;
+    mask-clip: border-box, padding-box;
+    -webkit-mask-composite: source-in;
+    mask-composite: intersect;
+    opacity: 0.9;
+  }
+  .doc::after {
+    content: attr(data-ext);
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 6px;
+    text-align: center;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    font-size: 0.5625rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+  .doc-folder {
+    width: 48px;
+    height: 36px;
+    margin-block: 9px 5px;
+    border-radius: 4px;
+    background-color: var(--paper);
+    background-image: none;
+  }
+  .doc-folder::before {
+    top: -8px;
+    left: -1.5px;
+    right: auto;
+    width: 22px;
+    height: 9px;
+    border-bottom: 0;
+    border-radius: 4px 6px 0 0;
+    background-color: var(--paper);
+    -webkit-mask-image: none;
+    mask-image: none;
+    opacity: 1;
+  }
+  .doc-folder::after {
+    content: '';
+    inset: 0;
+    bottom: 0;
+    background-color: var(--ink);
+    -webkit-mask-image: var(--hatch-2);
+    mask-image: var(--hatch-2);
+  }
+
+  .chip.own { cursor: pointer; border: var(--stroke) dashed var(--ink-3); }
+  .chip.own:focus-within { outline: 2px solid var(--spot); outline-offset: 2px; }
+  .plus {
+    position: relative;
+    width: 40px;
+    height: 50px;
+    border: var(--stroke) dashed var(--ink-3);
+    border-radius: 3px 13px 3px 3px;
+  }
+  .plus::before, .plus::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 14px;
+    height: 2px;
+    margin: -1px 0 0 -7px;
+    background: var(--ink);
+  }
+  .plus::after { transform: rotate(90deg); }
+
+  .desk-tools { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+  .tool {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border-radius: 999px;
+    border: var(--stroke) solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .tool:hover { background: var(--paper-2); }
+  .tool:focus-visible { outline: 2px solid var(--spot); outline-offset: 2px; border-radius: 999px; }
+  .tool[aria-pressed='true'] { background: var(--ink); color: var(--paper); }
+  .tool[aria-pressed='true'] kbd { border-color: var(--paper); }
+  .desk-note { margin-top: 12px; max-width: 46ch; font-size: 0.9375rem; line-height: 1.4; color: var(--ink-2); }
+
+  /* ── result sheet ── */
+  .result {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    min-height: 388px;
+    padding: 22px;
+    border-radius: var(--r-lg);
+  }
+  .result::before, .result::after { content: ''; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; }
+  .result::before { z-index: -1; border: var(--stroke) solid var(--ink); background-color: var(--paper); }
+  .result::after {
+    z-index: -2;
+    background-color: var(--ink);
+    -webkit-mask-image: var(--hatch-2);
+    mask-image: var(--hatch-2);
+    transform: translate(7px, 8px);
+  }
+  /* One column: the empty sheet is short, and grows the moment a half is
+     tapped, so the shift is part of the visitor's own action. */
+  @media (max-width: 860px) {
+    .result { min-height: 356px; }
+    .result[data-state='empty'] { min-height: 0; padding-block: 18px; }
+    .result[data-state='empty'] .result-card { display: none; }
+    .result[data-state='empty'] .result-empty { grid-auto-flow: column; justify-content: start; align-items: center; text-align: left; }
+    .result[data-state='empty'] .result-hint { max-width: none; }
+  }
+  .result-empty, .result-card { grid-area: 1 / 1; }
+  .result-empty { display: grid; place-content: center; justify-items: center; gap: 14px; text-align: center; }
+  .result-glyph {
+    display: grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: var(--stroke) dashed var(--ink-3);
+    color: var(--ink-2);
+    transform: rotate(180deg);
+  }
+  .result-hint { max-width: 26ch; font-size: 1.0625rem; color: var(--ink-2); }
+  .result-hint :global(b) { color: var(--ink); overflow-wrap: anywhere; }
+  .result-card { display: flex; flex-direction: column; opacity: 0; visibility: hidden; }
+  .result:is([data-state='shown'], [data-state='busy']) .result-empty { display: none; }
+  .result[data-state='shown'] .result-card { opacity: 1; visibility: visible; }
+  .result-busy { display: none; grid-area: 1 / 1; place-self: center; color: var(--ink-2); font-style: italic; }
+  .result[data-state='busy'] .result-busy { display: block; }
+  .rc-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .rc-file { min-width: 0; font-size: 1.0625rem; font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .rc-mode {
+    flex: none;
+    padding: 5px 10px;
+    border-radius: 999px;
+    border: var(--stroke) solid var(--ink);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .rc-big {
+    margin-top: 10px;
+    font-size: clamp(4.5rem, 9.6vw, 6.5rem);
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    transform-origin: left center;
+  }
+  .result:is([data-kind='optimal'], [data-kind='nodata']) .rc-big {
+    padding-block: 12px;
+    font-size: clamp(2.25rem, 5vw, 3.25rem);
+  }
+  /* Words, not a figure: set them in solid ink, not engraved. */
+  .result:is([data-kind='optimal'], [data-kind='nodata']) .rc-big { -webkit-text-fill-color: currentColor; -webkit-text-stroke: 0; }
+  .result:is([data-kind='optimal'], [data-kind='nodata']) .rc-big::after { content: none; }
+  /* Before: an empty outline. After: what is left, cross-hatched. The bar is
+     revealed by clipping, never by scaling, so the hatching keeps one tone. */
+  .rc-bars { display: grid; gap: 7px; margin-top: 14px; }
+  .rc-bar { height: 13px; border: var(--stroke) solid var(--ink); border-radius: 2px; }
+  .rc-bar i { display: block; height: 100%; }
+  .rc-after i {
+    background-color: var(--ink);
+    -webkit-mask-image: var(--cross-3);
+    mask-image: var(--cross-3);
+    clip-path: inset(0 calc((1 - var(--left, 1)) * 100%) 0 0);
+  }
+  .rc-after { border-color: var(--ink); }
+  .result[data-kind='nodata'] .rc-bars { display: none; }
+  .rc-sizes { margin-top: 12px; font-size: 1.0625rem; }
+  .rc-fn { margin-top: 8px; font-size: 1.3125rem; color: var(--spot); }
+  .rc-fn:empty { display: none; }
+  .rc-fn :global(i) { font-style: italic; }
+  .rc-method { margin-top: 10px; font-size: 1.0625rem; font-weight: 700; }
+  .rc-note { margin-top: 4px; font-size: 1rem; line-height: 1.4; color: var(--ink-2); }
+  .rc-note:empty { display: none; }
+  .rc-foot { margin-top: auto; padding-top: 14px; font-size: 0.9375rem; line-height: 1.4; color: var(--ink-3); }
+  .rc-foot :global(b) { color: var(--spot); font-weight: 700; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .result[data-state='shown'] .rc-big { animation: pop 0.6s var(--spring) both; }
+    .result[data-state='shown'] .rc-after i { animation: reveal 0.9s var(--ease) 0.1s both; }
+    .result[data-state='shown'] .result-card { animation: fade 0.25s both; }
+  }
+  @keyframes pop { from { transform: scaleX(1.3); } to { transform: none; } }
+  @keyframes reveal { from { clip-path: inset(0 0 0 0); } }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+  .sim-badge {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    width: fit-content;
+    margin: clamp(20px, 2.6vw, 28px) auto 0;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: var(--stroke) solid var(--ink);
+    background: var(--paper);
+    font-size: 0.9375rem;
+    color: var(--ink-2);
+  }
+  .sim-badge b { color: var(--ink); }
+  .sim-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--spot); }
+
+  @media (prefers-contrast: more) {
+    .chip:hover { border-color: var(--ink); }
+  }
+</style>
