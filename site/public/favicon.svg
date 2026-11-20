@@ -1,1 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4f8ef7"/><stop offset="1" stop-color="#1e3a8a"/></linearGradient></defs><rect width="100" height="100" rx="24" fill="url(#g)"/><path d="M30 27Q54 50 30 73M70 27Q46 50 70 73" fill="none" stroke="#e6ebf5" stroke-width="8.5" stroke-linecap="round"/><path d="M50 41l7 9-7 9-7-9z" fill="#22c58b"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+<style>
+.paper{fill:#f4f1e8}.ink{stroke:#17160f}.body{stroke:#f4f1e8}.gem{fill:#1c3fb8;stroke:#17160f}
+@media (prefers-color-scheme:dark){.paper{fill:#16150f}.ink{stroke:#ece8dc}.body{stroke:#16150f}.gem{fill:#a3b8ff;stroke:#ece8dc}}
+</style>
+<rect class="paper" width="1024" height="1024" rx="230"/>
+<rect class="ink" x="20" y="20" width="984" height="984" rx="212" fill="none" stroke-width="40"/>
+<g transform="translate(512 512) scale(1.26) translate(-512 -512)">
+<g fill="none" stroke-linecap="round">
+<path class="ink" d="M307 287C451 410 451 614 307 737M717 287C573 410 573 614 717 737" stroke-width="170"/>
+<path class="body" d="M307 287C451 410 451 614 307 737M717 287C573 410 573 614 717 737" stroke-width="96"/>
+</g>
+<path class="gem" d="M512 396L590 512L512 628L434 512Z" stroke-width="30" stroke-linejoin="round"/>
+</g>
+</svg>

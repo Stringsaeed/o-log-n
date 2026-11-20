@@ -72,6 +72,8 @@ The site is drawn as pen and ink on paper. Tone comes from hatching, never from 
 - **Inline drawings** (the ink icon, the hero's shaded curve) use the `<pattern>` fills and the `#wobble` displacement filter defined in `Sprite.astro`.
 - **Dark scheme** is the same drawing in chalk on a dark sheet: only `--paper`, `--ink` and `--spot` change.
 
+The app icon in the nav, footer and install block, and every favicon and touch icon, are renders of the app's Icon Composer document (`Support/AppIcon.icon`, on the app branch). `src/assets/icon.png` and `icon-dark.png` are its default and dark appearances from `ictool`; `public/favicon.svg` is the same mark without hatching, which is only noise at 16 px. Regenerate them if the app icon changes. The larger drawing in the hero is the site's own (`InkIcon.astro`).
+
 Rules that keep it working:
 
 - No body text on hatching. The title block has a paper-coloured edge around its letters for this reason.
